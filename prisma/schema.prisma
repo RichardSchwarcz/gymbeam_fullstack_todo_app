@@ -18,7 +18,7 @@ enum Priority {
 }
 
 model Task {
-    id        Int      @id @default(autoincrement())
+    id        String   @id @default(cuid())
     task      String
     completed Boolean
     dueDate   DateTime
@@ -27,12 +27,12 @@ model Task {
     updatedAt DateTime @updatedAt
 
     tags   Tag[]
-    list   List? @relation(fields: [listId], references: [id])
-    listId Int?
+    list   List?   @relation(fields: [listId], references: [id])
+    listId String?
 }
 
 model Tag {
-    id    Int    @id @default(autoincrement())
+    id    String @id @default(cuid())
     tag   String
     color String
 
@@ -40,7 +40,7 @@ model Tag {
 }
 
 model List {
-    id    Int    @id @default(autoincrement())
+    id    String @id @default(cuid())
     list  String
     tasks Task[]
 }
