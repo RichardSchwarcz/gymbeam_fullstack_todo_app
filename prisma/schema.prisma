@@ -10,11 +10,37 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Post {
+enum Priority {
+    low
+    medium
+    high
+    urgent
+}
+
+model Task {
     id        Int      @id @default(autoincrement())
-    name      String
+    task      String
+    completed Boolean
+    dueDate   DateTime
+    priority  Priority
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    @@index([name])
+    tags   Tag[]
+    list   List? @relation(fields: [listId], references: [id])
+    listId Int?
+}
+
+model Tag {
+    id    Int    @id @default(autoincrement())
+    tag   String
+    color String
+
+    task Task[]
+}
+
+model List {
+    id    Int    @id @default(autoincrement())
+    list  String
+    tasks Task[]
 }
