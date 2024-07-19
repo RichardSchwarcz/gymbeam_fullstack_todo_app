@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc'
 
-const Priority = z.enum(['low', 'medium', 'high', 'urgent'])
+const Priority = z.enum(['low', 'medium', 'high', 'urgent']).default('low')
 
 export const taskRouter = createTRPCRouter({
   createTask: publicProcedure
@@ -19,12 +19,16 @@ export const taskRouter = createTRPCRouter({
       })
     }),
   getTasks: publicProcedure.query(async ({ ctx }) => {
-    return ctx.db.task.findMany()
+    return ctx.db.task.findMany({
+      include: {
+        tags: true,
+      },
+    })
   }),
   updateTaskStatus: publicProcedure
     .input(
       z.object({
-        id: z.number(),
+        id: z.string(),
         completed: z.boolean(),
       })
     )
