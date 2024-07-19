@@ -11,11 +11,26 @@ export const taskRouter = createTRPCRouter({
         completed: z.boolean().default(false),
         dueDate: z.date(),
         priority: Priority,
+        tags: z
+          .array(
+            z.object({
+              id: z.string(),
+            })
+          )
+          .optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
       return ctx.db.task.create({
-        data: input,
+        data: {
+          task: input.task,
+          completed: input.completed,
+          dueDate: input.dueDate,
+          priority: input.priority,
+          tags: {
+            connect: input.tags?.map((tag) => ({ id: tag.id })),
+          },
+        },
       })
     }),
   getTasks: publicProcedure.query(async ({ ctx }) => {
