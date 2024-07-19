@@ -1,4 +1,3 @@
-import { useQuery } from '@tanstack/react-query'
 import {
   ChevronsRight,
   ListTodo,
@@ -12,7 +11,7 @@ import {
 import { useTheme } from 'next-themes'
 import { type Dispatch, type SetStateAction } from 'react'
 import { Button } from '~/components/ui/button'
-import { getTags } from '~/service/getTags'
+import { api } from '~/utils/api'
 import { MenuSeparator } from './menu-separator'
 
 export default function MenuSidebar({
@@ -23,13 +22,10 @@ export default function MenuSidebar({
   setSidebarVisibility: Dispatch<SetStateAction<boolean>>
 }) {
   const { setTheme } = useTheme()
-  const { data: tags } = useQuery({
-    queryKey: ['tags'],
-    queryFn: getTags,
-  })
+  const { data: tags } = api.tag.getTags.useQuery()
 
   return (
-    <div className="flex w-1/3 flex-col justify-between rounded-3xl bg-stone-50 p-4">
+    <div className="flex min-h-screen w-1/3 flex-col justify-between rounded-3xl bg-stone-50 p-4">
       <div>
         <div className="mb-4 flex items-center justify-between">
           <p className="text-xl font-bold">Menu</p>
