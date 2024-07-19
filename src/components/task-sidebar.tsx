@@ -44,6 +44,13 @@ export default function TaskSidebar({
   isTaskbarVisible: boolean
   setTaskbarVisibility: Dispatch<SetStateAction<boolean>>
 }) {
+  const form = useForm<z.infer<typeof formSchema>>({
+    defaultValues: {
+      task: '',
+      description: '',
+      list: 'Personal',
+    },
+  })
   const { data: tags } = api.tag.getTags.useQuery()
   const queryClient = useQueryClient()
 
@@ -51,14 +58,8 @@ export default function TaskSidebar({
   const { mutate } = api.task.createTask.useMutation({
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey })
-    },
-  })
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    defaultValues: {
-      task: '',
-      description: '',
-      list: 'Personal',
+      form.reset()
+      setTaskbarVisibility(false)
     },
   })
 
