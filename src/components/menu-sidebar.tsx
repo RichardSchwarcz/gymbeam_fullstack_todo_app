@@ -1,3 +1,5 @@
+import { useQueryClient } from '@tanstack/react-query'
+import { getQueryKey } from '@trpc/react-query'
 import {
   ChevronsRight,
   ListTodo,
@@ -9,10 +11,11 @@ import {
   X,
 } from 'lucide-react'
 import { useTheme } from 'next-themes'
-import { type Dispatch, type SetStateAction } from 'react'
+import { useState, type Dispatch, type SetStateAction } from 'react'
 import { Button } from '~/components/ui/button'
 import { api } from '~/utils/api'
 import { MenuSeparator } from './menu-separator'
+import ReactiveInput from './reactive-input'
 
 export default function MenuSidebar({
   isSidebarVisible,
@@ -22,7 +25,17 @@ export default function MenuSidebar({
   setSidebarVisibility: Dispatch<SetStateAction<boolean>>
 }) {
   const { setTheme } = useTheme()
+  const [isNewTagInputVisible, setNewTagInputVisibility] = useState(false)
   const { data: tags } = api.tag.getTags.useQuery()
+
+  const queryClient = useQueryClient()
+  const queryKey = getQueryKey(api.tag.getTags)
+  const { mutate } = api.tag.createTag.useMutation({
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey })
+      setNewTagInputVisibility(false)
+    },
+  })
 
   return (
     <div className="flex min-h-screen w-1/3 flex-col justify-between rounded-3xl bg-stone-50 p-4">
@@ -86,10 +99,21 @@ export default function MenuSidebar({
               )
             })}
           </div>
-          <div className="flex gap-4">
+
+          {isNewTagInputVisible && (
+            <ReactiveInput
+              onMutate={(value) => mutate({ tag: value, color: 'red' })}
+              placeholder=""
+            />
+          )}
+
+          <button
+            className="border-bpy-4 flex w-full gap-4 text-left"
+            onClick={() => setNewTagInputVisibility(true)}
+          >
             <PlusIcon />
-            <p>Add New Tag</p>
-          </div>
+            Add New Tag
+          </button>
         </div>
       </div>
 
