@@ -1,4 +1,5 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQueryClient } from '@tanstack/react-query'
+import { getQueryKey } from '@trpc/react-query'
 import { format } from 'date-fns'
 import { Menu, PlusIcon } from 'lucide-react'
 import { useState } from 'react'
@@ -15,22 +16,21 @@ import {
   TableRow,
 } from '~/components/ui/table'
 import { cn } from '~/lib/utils'
+import { api } from '~/utils/api'
 
 export default function Home() {
   const [isMenuVisible, setMenuVisibility] = useState(true)
   const [isTaskBarVisible, setTaskBarVisibility] = useState(false)
   const queryClient = useQueryClient()
-  const { mutate } = useMutation({
-    mutationFn: updateTaskMutation,
+
+  const queryKey = getQueryKey(api.task.getTasks)
+  const { mutate } = api.task.updateTaskStatus.useMutation({
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['tasks'] })
+      void queryClient.invalidateQueries({ queryKey })
     },
   })
 
-  const { data: tasks } = useQuery({
-    queryKey: ['tasks'],
-    queryFn: getTasks,
-  })
+  const { data: tasks } = api.task.getTasks.useQuery()
 
   return (
     <div className="container flex max-h-svh gap-4 p-4">
@@ -64,7 +64,6 @@ export default function Home() {
               <TableHead />
               <TableHead>Task</TableHead>
               <TableHead>Tags</TableHead>
-              <TableHead>Status</TableHead>
               <TableHead>Due</TableHead>
               <TableHead>Priority</TableHead>
             </TableRow>
@@ -83,13 +82,16 @@ export default function Home() {
                     <Checkbox
                       checked={task.completed}
                       onClick={() => {
-                        mutate({ task: task.id, completed: !task.completed })
+                        mutate({ id: task.id, completed: !task.completed })
                       }}
                     />
                   </TableCell>
                   <TableCell>{task.task}</TableCell>
-                  <TableCell>{task?.tags}</TableCell>
-                  <TableCell>{task.status}</TableCell>
+                  <TableCell>
+                    {task?.tags.map((tag) => {
+                      return <div key={tag.id}>{tag.tag}</div>
+                    })}
+                  </TableCell>
                   <TableCell>{format(task.dueDate, 'dd.MM.yyyy')}</TableCell>
                   <TableCell>{task?.priority}</TableCell>
                 </TableRow>
@@ -106,35 +108,4 @@ export default function Home() {
       ) : null}
     </div>
   )
-}
-
-type Task = {
-  id: string
-  createdAt: Date
-  task: string
-  completed: boolean
-  status: string
-  dueDate: Date
-  priority: string
-  tags: string
-}
-
-async function getTasks(): Promise<Task[] | undefined> {
-  return fetch(
-    `https://${process.env.NEXT_PUBLIC_MOCKAPI_SECRET}.mockapi.io/tasks`,
-    {
-      method: 'GET',
-      headers: { 'content-type': 'application/json' },
-    }
-  )
-    .then((res) => {
-      if (res.ok) {
-        return res.json() as Promise<Task[]>
-      }
-      throw new Error('Failed to fetch tasks')
-    })
-    .catch((error) => {
-      console.log(error)
-      return undefined
-    })
 }

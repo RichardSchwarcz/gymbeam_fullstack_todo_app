@@ -1,11 +1,11 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQueryClient } from '@tanstack/react-query'
+import { getQueryKey } from '@trpc/react-query'
 import { X } from 'lucide-react'
 import { type Dispatch, type SetStateAction } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Button } from '~/components/ui/button'
-import { env } from '~/env'
-import { getTags } from '~/service/getTags'
+import { api } from '~/utils/api'
 import { MenuSeparator } from './menu-separator'
 import { DatePicker } from './ui/datepicker'
 import { Input } from './ui/input'
@@ -44,15 +44,13 @@ export default function TaskSidebar({
   isTaskbarVisible: boolean
   setTaskbarVisibility: Dispatch<SetStateAction<boolean>>
 }) {
-  const { data: tags } = useQuery({
-    queryKey: ['tags'],
-    queryFn: getTags,
-  })
+  const { data: tags } = api.tag.getTags.useQuery()
   const queryClient = useQueryClient()
-  const { mutate } = useMutation({
-    mutationFn: createTaskMutation,
+
+  const queryKey = getQueryKey(api.task.getTasks)
+  const { mutate } = api.task.createTask.useMutation({
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['tasks'] })
+      void queryClient.invalidateQueries({ queryKey })
     },
   })
 
@@ -65,7 +63,7 @@ export default function TaskSidebar({
   })
 
   return (
-    <div className="flex w-1/3 flex-col justify-between rounded-3xl bg-stone-50 p-4">
+    <div className="flex min-h-screen w-1/3 flex-col justify-between rounded-3xl bg-stone-50 p-4">
       <div>
         <div className="mb-4 flex items-center justify-between">
           <p className="text-xl font-bold">Task</p>
@@ -175,15 +173,7 @@ export default function TaskSidebar({
         <Button variant="outline">Delete Task</Button>
         <Button
           onClick={() => {
-            const values = form.getValues()
-            const parsedTags = values.tags.map((tag) => tag.tag).join(', ')
-            const parsedValues = {
-              ...values,
-              dueDate: values.dueDate.toISOString(),
-              tags: parsedTags,
-              completed: false,
-            }
-            mutate(parsedValues)
+            mutate(form.getValues())
           }}
         >
           Save Changes
@@ -191,19 +181,4 @@ export default function TaskSidebar({
       </div>
     </div>
   )
-}
-
-function createTaskMutation(data: {
-  task: string
-  description?: string
-  list: z.infer<typeof formSchema>['list']
-  dueDate: string
-  tags: string
-  completed: boolean
-}) {
-  return fetch(`https://${env.NEXT_PUBLIC_MOCKAPI_SECRET}.mockapi.io/tasks`, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify(data),
-  })
 }
