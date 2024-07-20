@@ -86,7 +86,7 @@ export default function Home() {
                     setNewTaskBarVisibility(false)
                   }}
                   className={cn(
-                    'h-14',
+                    'h-14 cursor-pointer',
                     task.completed && 'bg-red-50/40 line-through'
                   )}
                 >
