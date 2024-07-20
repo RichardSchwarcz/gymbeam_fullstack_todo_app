@@ -13,7 +13,13 @@ import {
   X,
 } from 'lucide-react'
 import { useTheme } from 'next-themes'
-import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
+import {
+  useEffect,
+  useState,
+  type Dispatch,
+  type ReactNode,
+  type SetStateAction,
+} from 'react'
 import { Button } from '~/components/ui/button'
 import { hexToRgba } from '~/lib/hextToRrgba'
 import { cn } from '~/lib/utils'
@@ -34,6 +40,8 @@ export default function MenuSidebar({
   const [isNewListInputVisible, setNewListInputVisibility] = useState(false)
   const { data: tags } = api.tag.getTags.useQuery()
   const { data: lists } = api.list.getLists.useQuery()
+  const { data: groupedTasksByDueDate } =
+    api.task.getTasksGroupedByDate.useQuery()
 
   const queryClient = useQueryClient()
   const { mutate: createTag } = api.tag.createTag.useMutation({
@@ -86,27 +94,24 @@ export default function MenuSidebar({
 
         <div className="flex flex-col">
           <p className="mb-2 text-sm font-semibold text-slate-800">TASKS</p>
-          <Button
-            className="w-full items-center justify-start gap-2 px-2"
-            variant="ghost"
+          <TaskButton
+            data={groupedTasksByDueDate?.upcomingTasks.length}
+            icon={<ChevronsRight strokeWidth={1.5} />}
           >
-            <ChevronsRight strokeWidth={1.5} />
-            <p>Upcoming</p>
-          </Button>
-          <Button
-            className="w-full items-center justify-start gap-2 px-2"
-            variant="ghost"
+            Upcoming
+          </TaskButton>
+          <TaskButton
+            data={groupedTasksByDueDate?.todaysTasks.length}
+            icon={<ListTodo strokeWidth={1.5} />}
           >
-            <ListTodo strokeWidth={1.5} />
-            <p>Today</p>
-          </Button>
-          <Button
-            className="w-full items-center justify-start gap-2 px-2"
-            variant="ghost"
+            Today
+          </TaskButton>
+          <TaskButton
+            data={groupedTasksByDueDate?.overdueTasks.length}
+            icon={<CircleAlert strokeWidth={1.5} />}
           >
-            <CircleAlert strokeWidth={1.5} />
-            <p>Overdue</p>
-          </Button>
+            Overdue
+          </TaskButton>
         </div>
 
         <MenuSeparator />
@@ -223,5 +228,27 @@ function ListItem({
       />
       <p>{children}</p>
     </div>
+  )
+}
+
+function TaskButton({
+  children,
+  data,
+  icon,
+}: {
+  children: string
+  data: number | undefined
+  icon: ReactNode
+}) {
+  return (
+    <Button className="w-full items-center px-2" variant="ghost">
+      <div className="flex w-full items-center justify-between">
+        <div className="flex items-center gap-2">
+          {icon}
+          <p>{children}</p>
+        </div>
+        <p className="rounded-md border bg-white px-2 py-1 font-bold">{data}</p>
+      </div>
+    </Button>
   )
 }
