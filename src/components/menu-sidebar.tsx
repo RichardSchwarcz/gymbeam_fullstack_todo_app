@@ -67,7 +67,7 @@ export default function MenuSidebar({
   }, [])
 
   return (
-    <div className="w-72 flex-none">
+    <div className="hidden w-72 flex-none lg:block">
       <div className="flex min-h-[calc(100vh-2rem)] flex-col justify-between rounded-3xl bg-stone-50 p-4">
         <div>
           <div className="mb-4 flex items-center justify-between">
