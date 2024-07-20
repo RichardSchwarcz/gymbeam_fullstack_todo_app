@@ -1,3 +1,3 @@
 export function MenuSeparator() {
-  return <div className="mb-4 w-full border-b" />
+  return <div className="my-8 w-full border-b" />
 }
