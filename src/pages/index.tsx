@@ -101,7 +101,6 @@ export default function Home() {
           </TableHeader>
           <TableBody>
             {tasks?.map((task) => {
-              console.log(`text-${priorityColors(task.priority)}-400`)
               return (
                 <TableRow
                   key={task.id}
