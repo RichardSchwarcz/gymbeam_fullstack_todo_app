@@ -14,7 +14,7 @@ export function MenuDrawer({
   return (
     <Drawer onOpenChange={setIsDrawerOpen} open={isDrawerOpen} direction="left">
       <DrawerContent
-        className="h-full w-full bg-stone-50 sm:w-[400px]"
+        className="h-full w-full overflow-auto bg-stone-50 sm:w-[400px]"
         aria-describedby={undefined}
       >
         <DialogTitle className="hidden">Menu sidebar</DialogTitle>
