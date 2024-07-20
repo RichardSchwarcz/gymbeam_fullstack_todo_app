@@ -21,6 +21,7 @@ import {
 } from '~/components/ui/table'
 import useMediaQuery from '~/hooks/useMediaQuery'
 import { hexToRgba } from '~/lib/hextToRrgba'
+import priorityColors from '~/lib/priorityColors'
 import { cn } from '~/lib/utils'
 import { api } from '~/utils/api'
 
@@ -100,6 +101,7 @@ export default function Home() {
           </TableHeader>
           <TableBody>
             {tasks?.map((task) => {
+              console.log(`text-${priorityColors(task.priority)}-400`)
               return (
                 <TableRow
                   key={task.id}
@@ -122,7 +124,7 @@ export default function Home() {
                       }}
                     />
                   </TableCell>
-                  <TableCell>{task.task}</TableCell>
+                  <TableCell className="font-semibold">{task.task}</TableCell>
                   <TableCell className="hidden sm:table-cell">
                     {format(task.dueDate, 'dd.MM.yyyy')}
                   </TableCell>
@@ -145,7 +147,17 @@ export default function Home() {
                     })}
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
-                    {task?.priority}
+                    <div
+                      className="w-fit rounded-md px-2 py-1"
+                      style={{
+                        backgroundColor: hexToRgba(
+                          priorityColors(task.priority),
+                          resolvedTheme!
+                        ),
+                      }}
+                    >
+                      {task?.priority}
+                    </div>
                   </TableCell>
                 </TableRow>
               )
