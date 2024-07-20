@@ -67,9 +67,14 @@ export default function TaskSidebar({
 
   const { data: tags } = api.tag.getTags.useQuery()
   const { data: lists } = api.list.getLists.useQuery()
-  const { data: taskData, isSuccess } = api.task.getTask.useQuery({
-    id: task,
-  })
+  const { data: taskData, isSuccess } = api.task.getTask.useQuery(
+    {
+      id: task,
+    },
+    {
+      enabled: taskAction === 'editTask',
+    }
+  )
 
   const queryClient = useQueryClient()
   const queryKey = getQueryKey(api.task.getTasks)
