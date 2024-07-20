@@ -72,28 +72,30 @@ export default function Home() {
           isDrawerOpen={isMenuVisible}
           setIsDrawerOpen={setMenuVisibility}
         />
-      ) : (
-        <div className="pt-4">
+      ) : null}
+      <div className="scrollbar-thin w-full flex-1 flex-shrink rounded-3xl p-4">
+        <div className="flex gap-2">
+          {!isMenuVisible && (
+            <Button
+              size="icon"
+              variant="outline"
+              onClick={() => setMenuVisibility(!isMenuVisible)}
+            >
+              <Menu size={18} />
+            </Button>
+          )}
           <Button
-            size="icon"
-            variant="ghost"
-            onClick={() => setMenuVisibility(!isMenuVisible)}
+            className="w-full justify-start gap-2 text-slate-500"
+            variant="outline"
+            onClick={() => {
+              setNewTaskBarVisibility(true)
+              setEditTaskBarVisibility(false)
+            }}
           >
-            <Menu />
+            <PlusIcon size={18} />
+            Add New Task
           </Button>
         </div>
-      )}
-      <div className="scrollbar-thin w-full flex-1 flex-shrink rounded-3xl p-4">
-        <button
-          className="flex w-full gap-4 border-b border-slate-200 py-4 text-left text-slate-400"
-          onClick={() => {
-            setNewTaskBarVisibility(true)
-            setEditTaskBarVisibility(false)
-          }}
-        >
-          <PlusIcon />
-          Add New Task
-        </button>
         <Table>
           <TableHeader>
             <TableRow>
