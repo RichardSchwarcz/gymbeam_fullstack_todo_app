@@ -1,6 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { getQueryKey } from '@trpc/react-query'
 import { X } from 'lucide-react'
+import { useRouter } from 'next/router'
 import { type Dispatch, type SetStateAction } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -38,13 +39,14 @@ const formSchema = z.object({
   ),
 })
 
-export default function TaskSidebar({
+export default function EditTaskSidebar({
   isTaskbarVisible,
   setTaskbarVisibility,
 }: {
   isTaskbarVisible: boolean
   setTaskbarVisibility: Dispatch<SetStateAction<boolean>>
 }) {
+  const router = useRouter()
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
       task: '',
@@ -69,11 +71,14 @@ export default function TaskSidebar({
     <div className="flex min-h-screen w-1/3 flex-col justify-between rounded-3xl bg-stone-50 p-4">
       <div>
         <div className="mb-4 flex items-center justify-between">
-          <p className="text-xl font-bold">Task</p>
+          <p className="text-xl font-bold">Edit Task</p>
           <Button
             size="icon"
             variant="ghost"
-            onClick={() => setTaskbarVisibility(!isTaskbarVisible)}
+            onClick={() => {
+              void router.push('/')
+              setTaskbarVisibility(!isTaskbarVisible)
+            }}
           >
             <X />
           </Button>
