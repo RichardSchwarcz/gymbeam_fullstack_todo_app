@@ -54,7 +54,7 @@ export default function Home() {
           </Button>
         </div>
       )}
-      <div className="scrollbar-thin w-full rounded-3xl p-4">
+      <div className="scrollbar-thin w-full flex-1 flex-shrink rounded-3xl p-4">
         <button
           className="flex w-full gap-4 border-b border-slate-200 py-4 text-left text-slate-400"
           onClick={() => {
