@@ -2,9 +2,9 @@ import { faker } from '@faker-js/faker'
 import { useQueryClient } from '@tanstack/react-query'
 import { getQueryKey } from '@trpc/react-query'
 import {
+  ChevronsLeft,
   ChevronsRight,
   ListTodo,
-  Menu,
   Monitor,
   Moon,
   PlusIcon,
@@ -76,7 +76,7 @@ export default function MenuSidebar({
             variant="ghost"
             onClick={() => setSidebarVisibility(!isSidebarVisible)}
           >
-            <Menu />
+            <ChevronsLeft />
           </Button>
         </div>
 
