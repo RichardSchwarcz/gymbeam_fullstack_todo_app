@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker'
 import { useQueryClient } from '@tanstack/react-query'
 import { getQueryKey } from '@trpc/react-query'
 import {
@@ -28,13 +29,23 @@ export default function MenuSidebar({
   const [isNewTagInputVisible, setNewTagInputVisibility] = useState(false)
   const [isNewListInputVisible, setNewListInputVisibility] = useState(false)
   const { data: tags } = api.tag.getTags.useQuery()
+  const { data: lists } = api.list.getLists.useQuery()
 
   const queryClient = useQueryClient()
-  const queryKey = getQueryKey(api.tag.getTags)
-  const { mutate } = api.tag.createTag.useMutation({
+  const { mutate: createTag } = api.tag.createTag.useMutation({
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey })
+      void queryClient.invalidateQueries({
+        queryKey: getQueryKey(api.tag.getTags),
+      })
       setNewTagInputVisibility(false)
+    },
+  })
+  const { mutate: createList } = api.list.createList.useMutation({
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: getQueryKey(api.list.getLists),
+      })
+      setNewListInputVisibility(false)
     },
   })
 
@@ -88,15 +99,20 @@ export default function MenuSidebar({
         <div className="mb-4 flex flex-col gap-2">
           <p className="text-sm font-semibold text-slate-800">LISTS</p>
           <div>
-            <ListItem color="#dc2626">Personal</ListItem>
-            <ListItem color="#b45309">Work</ListItem>
-            <ListItem color="#0e7490">Climbing</ListItem>
-            <ListItem color="#404040">Books</ListItem>
+            {lists?.map((list) => {
+              return (
+                <div key={list.id}>
+                  <ListItem color={list.color}>{list.list}</ListItem>
+                </div>
+              )
+            })}
           </div>
 
           {isNewListInputVisible && (
             <ReactiveInput
-              onMutate={(value) => mutate({ tag: value, color: 'red' })}
+              onMutate={(value) =>
+                createList({ list: value, color: faker.color.rgb() })
+              }
               placeholder=""
             />
           )}
@@ -131,7 +147,9 @@ export default function MenuSidebar({
 
           {isNewTagInputVisible && (
             <ReactiveInput
-              onMutate={(value) => mutate({ tag: value, color: 'red' })}
+              onMutate={(value) =>
+                createTag({ tag: value, color: faker.color.rgb() })
+              }
               placeholder=""
             />
           )}
