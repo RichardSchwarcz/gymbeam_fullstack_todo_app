@@ -97,10 +97,10 @@ export default function Home() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead />
+              <TableHead className="w-10" />
               <TableHead>Task</TableHead>
+              <TableHead className="hidden sm:table-cell">Due</TableHead>
               <TableHead className="hidden md:table-cell">Tags</TableHead>
-              <TableHead className="hidden md:table-cell">Due</TableHead>
               <TableHead className="hidden md:table-cell">Priority</TableHead>
             </TableRow>
           </TableHeader>
@@ -122,19 +122,20 @@ export default function Home() {
                   <TableCell>
                     <Checkbox
                       checked={task.completed}
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation()
                         mutate({ id: task.id, completed: !task.completed })
                       }}
                     />
                   </TableCell>
                   <TableCell>{task.task}</TableCell>
+                  <TableCell className="hidden sm:table-cell">
+                    {format(task.dueDate, 'dd.MM.yyyy')}
+                  </TableCell>
                   <TableCell className="hidden md:table-cell">
                     {task?.tags.map((tag) => {
                       return <div key={tag.id}>{tag.tag}</div>
                     })}
-                  </TableCell>
-                  <TableCell className="hidden md:table-cell">
-                    {format(task.dueDate, 'dd.MM.yyyy')}
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
                     {task?.priority}
