@@ -20,7 +20,7 @@ export function TaskDrawer({
       direction="right"
     >
       <DrawerContent
-        className="fixed bottom-0 right-0 h-full w-full overflow-auto bg-stone-50 sm:w-[400px]"
+        className="fixed bottom-0 right-0 h-full w-full overflow-auto overflow-x-hidden bg-stone-50 sm:w-[400px]"
         aria-describedby={undefined}
       >
         <DialogTitle className="hidden">Task sidebar</DialogTitle>
