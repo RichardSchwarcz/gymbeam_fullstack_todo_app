@@ -2,6 +2,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { getQueryKey } from '@trpc/react-query'
 import { format } from 'date-fns'
 import { Menu, PlusIcon } from 'lucide-react'
+import { useTheme } from 'next-themes'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { MenuDrawer } from '~/components/menu-drawer'
@@ -19,11 +20,13 @@ import {
   TableRow,
 } from '~/components/ui/table'
 import useMediaQuery from '~/hooks/useMediaQuery'
+import { hexToRgba } from '~/lib/hextToRrgba'
 import { cn } from '~/lib/utils'
 import { api } from '~/utils/api'
 
 export default function Home() {
   const router = useRouter()
+
   const [isMenuVisible, setMenuVisibility] = useState(false)
   const [isNewTaskBarVisible, setNewTaskBarVisibility] = useState(false)
   const [isEditTaskBarVisible, setEditTaskBarVisibility] = useState(false)
@@ -44,6 +47,8 @@ export default function Home() {
   })
 
   const { data: tasks } = api.task.getTasks.useQuery()
+
+  const { resolvedTheme } = useTheme()
 
   return (
     <div className="container flex max-h-svh gap-4 p-4">
@@ -121,9 +126,22 @@ export default function Home() {
                   <TableCell className="hidden sm:table-cell">
                     {format(task.dueDate, 'dd.MM.yyyy')}
                   </TableCell>
-                  <TableCell className="hidden md:table-cell">
+                  <TableCell className="hidden gap-1 md:flex">
                     {task?.tags.map((tag) => {
-                      return <div key={tag.id}>{tag.tag}</div>
+                      return (
+                        <div
+                          key={tag.id}
+                          className="w-fit rounded-md px-2 py-1"
+                          style={{
+                            backgroundColor: hexToRgba(
+                              tag.color,
+                              resolvedTheme!
+                            ),
+                          }}
+                        >
+                          {tag.tag}
+                        </div>
+                      )
                     })}
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
