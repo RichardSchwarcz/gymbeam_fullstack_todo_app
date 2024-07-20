@@ -18,6 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from '~/components/ui/table'
+import useMediaQuery from '~/hooks/useMediaQuery'
 import { cn } from '~/lib/utils'
 import { api } from '~/utils/api'
 
@@ -26,21 +27,8 @@ export default function Home() {
   const [isMenuVisible, setMenuVisibility] = useState(false)
   const [isNewTaskBarVisible, setNewTaskBarVisibility] = useState(false)
   const [isEditTaskBarVisible, setEditTaskBarVisibility] = useState(false)
-  const [isLargeScreen, setIsLargeScreen] = useState(true)
+  const isLargeScreen = useMediaQuery('(min-width: 1280px)')
   const queryClient = useQueryClient()
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(min-width: 1280px)')
-    const handleMediaQueryChange = (event: MediaQueryListEvent) => {
-      setIsLargeScreen(event.matches)
-    }
-    mediaQuery.addEventListener('change', handleMediaQueryChange)
-    setIsLargeScreen(mediaQuery.matches)
-
-    return () => {
-      mediaQuery.removeEventListener('change', handleMediaQueryChange)
-    }
-  }, [])
 
   useEffect(() => {
     if (isNewTaskBarVisible && isMenuVisible && !isLargeScreen) {
