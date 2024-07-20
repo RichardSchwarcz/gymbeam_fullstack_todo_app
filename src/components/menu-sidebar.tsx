@@ -238,6 +238,27 @@ function ListItem({
       })
     },
   })
+  const { mutate: updateList } = api.list.updateList.useMutation({
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: getQueryKey(api.list.getLists),
+      })
+    },
+  })
+
+  const submitMutation = () => {
+    if (renamedItem === '') {
+      return
+    }
+    updateList({ id, list: renamedItem })
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      submitMutation()
+    }
+  }
+
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-2">
@@ -261,6 +282,8 @@ function ListItem({
               className="focus-visible:ring-0"
               defaultValue={children}
               onChange={(e) => setRenamedItem(e.target.value)}
+              onKeyDown={(e) => handleKeyDown(e)}
+              onBlur={() => submitMutation()}
             />
             <button
               onClick={() => deleteList({ id })}
