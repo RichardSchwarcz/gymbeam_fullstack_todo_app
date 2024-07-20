@@ -2,7 +2,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { getQueryKey } from '@trpc/react-query'
 import { X } from 'lucide-react'
 import { useRouter } from 'next/router'
-import { useEffect, type Dispatch, type SetStateAction } from 'react'
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Button } from '~/components/ui/button'
@@ -47,6 +47,8 @@ export default function EditTaskSidebar({
   setTaskbarVisibility: Dispatch<SetStateAction<boolean>>
 }) {
   const router = useRouter()
+  // this key remounts the select component on every task change
+  const [key, setKey] = useState(0)
   const { task } = router.query as {
     task: string
   }
@@ -90,6 +92,7 @@ export default function EditTaskSidebar({
         description: taskData.description ?? undefined,
       }
       form.reset(parsedData)
+      setKey((prev) => prev + 1)
     }
   }, [taskData, isSuccess]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -214,12 +217,12 @@ export default function EditTaskSidebar({
             <Controller
               control={form.control}
               name="tags"
-              render={({ field }) => {
+              render={() => {
                 return (
                   <MultiSelect
+                    key={key}
                     placeholder="Add Tags"
-                    defaultValue={field.value.map((tag) => tag.id)}
-                    value={field.value.map((tag) => tag.id)}
+                    defaultValue={taskData?.tags.map((tag) => tag.id) ?? []}
                     options={
                       tags?.map((tag) => ({
                         label: tag.tag,
