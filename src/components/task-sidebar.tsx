@@ -137,6 +137,33 @@ export default function TaskSidebar({
           </div>
 
           <div className="mb-4 flex flex-col">
+            <p className="text-sm font-semibold text-slate-500">Priority</p>
+            <Controller
+              control={form.control}
+              name="priority"
+              render={({ field }) => (
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Choose priority" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {formSchema.shape.priority.options.map((priority) => {
+                      return (
+                        <SelectItem value={priority.value} key={priority.value}>
+                          {priority.value}
+                        </SelectItem>
+                      )
+                    })}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+          </div>
+
+          <div className="mb-4 flex flex-col">
             <p className="text-sm font-semibold text-slate-500">Due Date</p>
             <DatePicker<z.infer<typeof formSchema>>
               name="dueDate"
