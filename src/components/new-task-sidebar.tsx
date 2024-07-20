@@ -49,7 +49,7 @@ export default function NewTaskSidebar({
     defaultValues: {
       task: '',
       description: '',
-      list: 'Personal',
+      list: '',
     },
   })
   const { data: tags } = api.tag.getTags.useQuery()
@@ -125,7 +125,7 @@ export default function NewTaskSidebar({
                   <SelectContent>
                     {lists?.map((list) => {
                       return (
-                        <SelectItem value={list.list} key={list.id}>
+                        <SelectItem value={list.id} key={list.id}>
                           {list.list}
                         </SelectItem>
                       )
