@@ -4,11 +4,10 @@ import { format } from 'date-fns'
 import { Menu, PlusIcon } from 'lucide-react'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import EditTaskSidebar from '~/components/edit-task-sidebar'
 import { MenuDrawer } from '~/components/menu-drawer'
 import MenuSidebar from '~/components/menu-sidebar'
-import NewTaskSidebar from '~/components/new-task-sidebar'
 import { TaskDrawer } from '~/components/task-drawer'
+import TaskSidebar from '~/components/task-sidebar'
 import { Button } from '~/components/ui/button'
 import { Checkbox } from '~/components/ui/checkbox'
 import {
@@ -150,21 +149,32 @@ export default function Home() {
       </div>
       {isLargeScreen && isNewTaskBarVisible ? (
         <div className="w-80 flex-none">
-          <NewTaskSidebar
+          <TaskSidebar
             isTaskbarVisible={isNewTaskBarVisible}
             setTaskbarVisibility={setNewTaskBarVisibility}
+            taskAction="newTask"
           />
         </div>
       ) : !isLargeScreen && isNewTaskBarVisible ? (
         <TaskDrawer
           isDrawerOpen={isNewTaskBarVisible}
           setIsDrawerOpen={setNewTaskBarVisibility}
+          taskAction="newTask"
         />
       ) : null}
-      {isEditTaskBarVisible ? (
-        <EditTaskSidebar
-          isTaskbarVisible={isEditTaskBarVisible}
-          setTaskbarVisibility={setEditTaskBarVisibility}
+      {isLargeScreen && isEditTaskBarVisible ? (
+        <div className="w-80 flex-none">
+          <TaskSidebar
+            isTaskbarVisible={isEditTaskBarVisible}
+            setTaskbarVisibility={setEditTaskBarVisibility}
+            taskAction="editTask"
+          />
+        </div>
+      ) : !isLargeScreen && isEditTaskBarVisible ? (
+        <TaskDrawer
+          isDrawerOpen={isEditTaskBarVisible}
+          setIsDrawerOpen={setEditTaskBarVisibility}
+          taskAction="editTask"
         />
       ) : null}
     </div>
