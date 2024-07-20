@@ -31,7 +31,7 @@ export default function Home() {
   const queryClient = useQueryClient()
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(min-width: 1200px)')
+    const mediaQuery = window.matchMedia('(min-width: 1280px)')
     const handleMediaQueryChange = (event: MediaQueryListEvent) => {
       setIsLargeScreen(event.matches)
     }
@@ -99,9 +99,9 @@ export default function Home() {
             <TableRow>
               <TableHead />
               <TableHead>Task</TableHead>
-              <TableHead>Tags</TableHead>
-              <TableHead>Due</TableHead>
-              <TableHead>Priority</TableHead>
+              <TableHead className="hidden md:table-cell">Tags</TableHead>
+              <TableHead className="hidden md:table-cell">Due</TableHead>
+              <TableHead className="hidden md:table-cell">Priority</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -128,13 +128,17 @@ export default function Home() {
                     />
                   </TableCell>
                   <TableCell>{task.task}</TableCell>
-                  <TableCell>
+                  <TableCell className="hidden md:table-cell">
                     {task?.tags.map((tag) => {
                       return <div key={tag.id}>{tag.tag}</div>
                     })}
                   </TableCell>
-                  <TableCell>{format(task.dueDate, 'dd.MM.yyyy')}</TableCell>
-                  <TableCell>{task?.priority}</TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    {format(task.dueDate, 'dd.MM.yyyy')}
+                  </TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    {task?.priority}
+                  </TableCell>
                 </TableRow>
               )
             })}
@@ -142,7 +146,7 @@ export default function Home() {
         </Table>
       </div>
       {isLargeScreen && isNewTaskBarVisible ? (
-        <div className="w-72 flex-none">
+        <div className="w-80 flex-none">
           <NewTaskSidebar
             isTaskbarVisible={isNewTaskBarVisible}
             setTaskbarVisibility={setNewTaskBarVisibility}
