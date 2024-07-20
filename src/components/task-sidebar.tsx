@@ -8,6 +8,7 @@ import { z } from 'zod'
 import { Button } from '~/components/ui/button'
 import { api } from '~/utils/api'
 import { MenuSeparator } from './menu-separator'
+import SidebarContainer from './sidebar-container'
 import { DatePicker } from './ui/datepicker'
 import { Input } from './ui/input'
 import { MultiSelect } from './ui/multi-select'
@@ -115,7 +116,7 @@ export default function TaskSidebar({
   }, [taskData, isSuccess]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div className="flex min-h-[calc(100vh-2rem)] flex-col justify-between rounded-3xl bg-stone-50 p-4">
+    <SidebarContainer>
       <div>
         <div className="mb-4 flex items-center justify-between">
           {taskAction === 'editTask' ? (
@@ -295,6 +296,6 @@ export default function TaskSidebar({
           Save Changes
         </Button>
       </div>
-    </div>
+    </SidebarContainer>
   )
 }

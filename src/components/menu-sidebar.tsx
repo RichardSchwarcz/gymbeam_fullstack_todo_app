@@ -19,6 +19,7 @@ import { cn } from '~/lib/utils'
 import { api } from '~/utils/api'
 import { MenuSeparator } from './menu-separator'
 import ReactiveInput from './reactive-input'
+import SidebarContainer from './sidebar-container'
 
 export default function MenuSidebar({
   isSidebarVisible,
@@ -69,7 +70,7 @@ export default function MenuSidebar({
   }, [])
 
   return (
-    <div className="flex min-h-[calc(100vh-2rem)] flex-col justify-between rounded-3xl bg-stone-50 p-4">
+    <SidebarContainer>
       <div>
         <div className="mb-8 flex items-center justify-between">
           <p className="text-xl font-bold">Menu</p>
@@ -200,7 +201,7 @@ export default function MenuSidebar({
           <Monitor strokeWidth={1.5} size={20} />
         </Button>
       </div>
-    </div>
+    </SidebarContainer>
   )
 }
 
