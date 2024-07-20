@@ -1,3 +1,4 @@
+import { isFuture, isPast, isSameDay } from 'date-fns'
 import { z } from 'zod'
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc'
 
@@ -47,6 +48,15 @@ export const taskRouter = createTRPCRouter({
         tags: true,
       },
     })
+  }),
+  getTasksGroupedByDate: publicProcedure.query(async ({ ctx }) => {
+    const tasks = await ctx.db.task.findMany({
+      select: {
+        id: true,
+        dueDate: true,
+      },
+    })
+    return groupTasksByDueDate(tasks)
   }),
   getTask: publicProcedure
     .input(
@@ -141,3 +151,32 @@ export const taskRouter = createTRPCRouter({
       })
     }),
 })
+
+type Task = {
+  id: string
+  dueDate: Date
+}
+
+export default function groupTasksByDueDate(tasks: Task[]) {
+  const todaysTasks: Task[] = []
+  const overdueTasks: Task[] = []
+  const upcomingTasks: Task[] = []
+
+  const today = new Date()
+
+  tasks.forEach((task) => {
+    if (isSameDay(task.dueDate, today)) {
+      todaysTasks.push(task)
+    } else if (isPast(task.dueDate) && !isSameDay(task.dueDate, today)) {
+      overdueTasks.push(task)
+    } else if (isFuture(task.dueDate)) {
+      upcomingTasks.push(task)
+    }
+  })
+
+  return {
+    todaysTasks,
+    overdueTasks,
+    upcomingTasks,
+  }
+}
