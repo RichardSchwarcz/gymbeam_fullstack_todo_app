@@ -22,11 +22,12 @@ import { Textarea } from './ui/textarea'
 const formSchema = z.object({
   task: z.string(),
   description: z.string().optional(),
-  list: z.union([
-    z.literal('Personal'),
-    z.literal('Work'),
-    z.literal('Climbing'),
-    z.literal('Books'),
+  list: z.string(),
+  priority: z.union([
+    z.literal('low'),
+    z.literal('medium'),
+    z.literal('high'),
+    z.literal('urgent'),
   ]),
   dueDate: z.date(),
   tags: z.array(
@@ -52,6 +53,7 @@ export default function TaskSidebar({
     },
   })
   const { data: tags } = api.tag.getTags.useQuery()
+  const { data: lists } = api.list.getLists.useQuery()
   const queryClient = useQueryClient()
 
   const queryKey = getQueryKey(api.task.getTasks)
@@ -121,10 +123,13 @@ export default function TaskSidebar({
                     <SelectValue placeholder="Pick A List" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Personal">Personal</SelectItem>
-                    <SelectItem value="Work">Work</SelectItem>
-                    <SelectItem value="Climbing">Climbing</SelectItem>
-                    <SelectItem value="Books">Books</SelectItem>
+                    {lists?.map((list) => {
+                      return (
+                        <SelectItem value={list.list} key={list.id}>
+                          {list.list}
+                        </SelectItem>
+                      )
+                    })}
                   </SelectContent>
                 </Select>
               )}
