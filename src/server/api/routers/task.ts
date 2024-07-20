@@ -114,6 +114,7 @@ export const taskRouter = createTRPCRouter({
         description: z.string().optional(),
         list: z.string(),
         priority: Priority,
+        dueDate: z.date(),
         tags: z.array(z.object({ id: z.string(), tag: z.string() })),
       })
     )
@@ -123,6 +124,7 @@ export const taskRouter = createTRPCRouter({
           id: input.id,
         },
         data: {
+          dueDate: input.dueDate,
           task: input.task,
           description: input.description,
           priority: input.priority,
