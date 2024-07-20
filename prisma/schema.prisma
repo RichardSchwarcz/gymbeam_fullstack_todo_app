@@ -18,17 +18,18 @@ enum Priority {
 }
 
 model Task {
-    id        String   @id @default(cuid())
-    task      String
-    completed Boolean
-    dueDate   DateTime
-    priority  Priority
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    id          String   @id @default(cuid())
+    task        String
+    completed   Boolean
+    dueDate     DateTime
+    description String?
+    priority    Priority
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
 
     tags   Tag[]
-    list   List?   @relation(fields: [listId], references: [id])
-    listId String?
+    list   List   @relation(fields: [listId], references: [id])
+    listId String
 }
 
 model Tag {
