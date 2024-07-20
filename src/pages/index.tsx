@@ -3,7 +3,7 @@ import { getQueryKey } from '@trpc/react-query'
 import { format } from 'date-fns'
 import { Menu, PlusIcon } from 'lucide-react'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import EditTaskSidebar from '~/components/edit-task-sidebar'
 import MenuSidebar from '~/components/menu-sidebar'
 import NewTaskSidebar from '~/components/new-task-sidebar'
@@ -25,7 +25,21 @@ export default function Home() {
   const [isMenuVisible, setMenuVisibility] = useState(true)
   const [isNewTaskBarVisible, setNewTaskBarVisibility] = useState(false)
   const [isEditTaskBarVisible, setEditTaskBarVisibility] = useState(false)
+  const [isLargeScreen, setIsLargeScreen] = useState(true)
   const queryClient = useQueryClient()
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(min-width: 1200px)')
+    const handleMediaQueryChange = (event: MediaQueryListEvent) => {
+      setIsLargeScreen(event.matches)
+    }
+    mediaQuery.addEventListener('change', handleMediaQueryChange)
+    setIsLargeScreen(mediaQuery.matches)
+
+    return () => {
+      mediaQuery.removeEventListener('change', handleMediaQueryChange)
+    }
+  }, [])
 
   const queryKey = getQueryKey(api.task.getTasks)
   const { mutate } = api.task.updateTaskStatus.useMutation({
@@ -38,11 +52,13 @@ export default function Home() {
 
   return (
     <div className="container flex max-h-svh gap-4 p-4">
-      {isMenuVisible ? (
-        <MenuSidebar
-          setSidebarVisibility={setMenuVisibility}
-          isSidebarVisible={isMenuVisible}
-        />
+      {isLargeScreen && isMenuVisible ? (
+        <div className="hidden lg:block">
+          <MenuSidebar
+            setSidebarVisibility={setMenuVisibility}
+            isSidebarVisible={isMenuVisible}
+          />
+        </div>
       ) : (
         <div className="pt-4">
           <Button
@@ -112,7 +128,7 @@ export default function Home() {
           </TableBody>
         </Table>
       </div>
-      {isNewTaskBarVisible ? (
+      {isLargeScreen && isNewTaskBarVisible ? (
         <NewTaskSidebar
           isTaskbarVisible={isNewTaskBarVisible}
           setTaskbarVisibility={setNewTaskBarVisibility}
