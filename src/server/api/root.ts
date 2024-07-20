@@ -1,4 +1,5 @@
 import { createCallerFactory, createTRPCRouter } from '~/server/api/trpc'
+import { ListRouter } from './routers/list'
 import { tagRouter } from './routers/tag'
 import { taskRouter } from './routers/task'
 
@@ -9,6 +10,7 @@ import { taskRouter } from './routers/task'
  */
 export const appRouter = createTRPCRouter({
   task: taskRouter,
+  list: ListRouter,
   tag: tagRouter,
 })
 
