@@ -78,28 +78,30 @@ export default function TaskSidebar({
   )
 
   const queryClient = useQueryClient()
-  const queryKey = getQueryKey(api.task.getTasks)
+  const tasksQueryKey = getQueryKey(api.task.getTasks)
+  const groupedTasksQueryKey = getQueryKey(api.task.getTasksGroupedByDate)
+  const onSuccessfulMutation = () => {
+    void queryClient.invalidateQueries({ queryKey: tasksQueryKey })
+    void queryClient.invalidateQueries({ queryKey: groupedTasksQueryKey })
+    form.reset()
+    void router.push('/')
+    setTaskbarVisibility(false)
+  }
 
   const { mutate: createTask } = api.task.createTask.useMutation({
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey })
-      form.reset()
-      setTaskbarVisibility(false)
+      onSuccessfulMutation()
     },
   })
   const { mutate: updateTaskProperties } =
     api.task.updateTaskProperties.useMutation({
       onSuccess: () => {
-        void queryClient.invalidateQueries({ queryKey })
-        form.reset()
-        setTaskbarVisibility(false)
+        onSuccessfulMutation()
       },
     })
   const { mutate: deleteTask } = api.task.deleteTask.useMutation({
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey })
-      form.reset()
-      setTaskbarVisibility(false)
+      onSuccessfulMutation()
     },
   })
 
