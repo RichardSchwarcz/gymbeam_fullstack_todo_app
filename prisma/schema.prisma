@@ -42,5 +42,7 @@ model Tag {
 model List {
     id    String @id @default(cuid())
     list  String
+    color String
+
     tasks Task[]
 }
