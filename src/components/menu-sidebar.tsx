@@ -14,6 +14,7 @@ import {
 import { useTheme } from 'next-themes'
 import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
 import { Button } from '~/components/ui/button'
+import { cn } from '~/lib/utils'
 import { api } from '~/utils/api'
 import { MenuSeparator } from './menu-separator'
 import ReactiveInput from './reactive-input'
@@ -25,7 +26,7 @@ export default function MenuSidebar({
   isSidebarVisible: boolean
   setSidebarVisibility: Dispatch<SetStateAction<boolean>>
 }) {
-  const { setTheme } = useTheme()
+  const { setTheme, resolvedTheme } = useTheme()
   const [isNewTagInputVisible, setNewTagInputVisibility] = useState(false)
   const [isNewListInputVisible, setNewListInputVisibility] = useState(false)
   const { data: tags } = api.tag.getTags.useQuery()
@@ -69,7 +70,7 @@ export default function MenuSidebar({
   return (
     <div className="flex min-h-[calc(100vh-2rem)] flex-col justify-between rounded-3xl bg-stone-50 p-4">
       <div>
-        <div className="mb-4 flex items-center justify-between">
+        <div className="mb-8 flex items-center justify-between">
           <p className="text-xl font-bold">Menu</p>
           <Button
             size="icon"
@@ -80,50 +81,61 @@ export default function MenuSidebar({
           </Button>
         </div>
 
-        <MenuSeparator />
-
-        <div className="mb-4 flex flex-col gap-2">
-          <p className="text-sm font-semibold text-slate-800">TASKS</p>
-          <div className="flex gap-4">
-            <ChevronsRight />
+        <div className="flex flex-col">
+          <p className="mb-2 text-sm font-semibold text-slate-800">TASKS</p>
+          <Button
+            className="w-full items-center justify-start gap-2 px-2"
+            variant="ghost"
+          >
+            <ChevronsRight strokeWidth={1.5} />
             <p>Upcoming</p>
-          </div>
-          <div className="flex gap-4">
-            <ListTodo />
+          </Button>
+          <Button
+            className="w-full items-center justify-start gap-2 px-2"
+            variant="ghost"
+          >
+            <ListTodo strokeWidth={1.5} />
             <p>Today</p>
-          </div>
+          </Button>
         </div>
 
         <MenuSeparator />
 
-        <div className="mb-4 flex flex-col gap-2">
-          <p className="text-sm font-semibold text-slate-800">LISTS</p>
-          <div>
+        <div className="flex flex-col">
+          <p className="mb-2 text-sm font-semibold text-slate-800">LISTS</p>
+          <div className="flex flex-col gap-2">
             {lists?.map((list) => {
               return (
-                <div key={list.id}>
-                  <ListItem color={list.color}>{list.list}</ListItem>
-                </div>
+                <ListItem
+                  color={list.color}
+                  key={list.id}
+                  theme={resolvedTheme!}
+                >
+                  {list.list}
+                </ListItem>
               )
             })}
           </div>
 
           {isNewListInputVisible && (
-            <ReactiveInput
-              onMutate={(value) =>
-                createList({ list: value, color: faker.color.rgb() })
-              }
-              placeholder=""
-            />
+            <div className="mt-4">
+              <ReactiveInput
+                onMutate={(value) =>
+                  createList({ list: value, color: faker.color.rgb() })
+                }
+                placeholder="List name"
+              />
+            </div>
           )}
 
-          <button
-            className="border-bpy-4 flex w-full gap-4 text-left"
+          <Button
+            className="mt-4 w-full justify-start gap-2 bg-transparent text-slate-500"
+            variant="outline"
             onClick={() => setNewListInputVisibility(true)}
           >
-            <PlusIcon />
+            <PlusIcon size={18} />
             Add New List
-          </button>
+          </Button>
         </div>
 
         <MenuSeparator />
@@ -136,7 +148,9 @@ export default function MenuSidebar({
                 <div
                   key={tag.id}
                   className="flex w-fit items-center gap-1 rounded-lg border px-2 py-1"
-                  style={{ backgroundColor: hexToRgba(tag.color, '0.2') }}
+                  style={{
+                    backgroundColor: hexToRgba(tag.color, resolvedTheme!),
+                  }}
                 >
                   <p>{tag.tag}</p>
                   <X className="h-5 w-5 cursor-pointer rounded-sm p-1 hover:bg-red-400" />
@@ -146,52 +160,64 @@ export default function MenuSidebar({
           </div>
 
           {isNewTagInputVisible && (
-            <ReactiveInput
-              onMutate={(value) =>
-                createTag({ tag: value, color: faker.color.rgb() })
-              }
-              placeholder=""
-            />
+            <div className="mt-4">
+              <ReactiveInput
+                onMutate={(value) =>
+                  createTag({ tag: value, color: faker.color.rgb() })
+                }
+                placeholder="Tag name"
+              />
+            </div>
           )}
 
-          <button
-            className="border-bpy-4 flex w-full gap-4 text-left"
+          <Button
+            className="mt-4 w-full justify-start gap-2 bg-transparent text-slate-500"
+            variant="outline"
             onClick={() => setNewTagInputVisibility(true)}
           >
-            <PlusIcon />
+            <PlusIcon size={18} />
             Add New Tag
-          </button>
+          </Button>
         </div>
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex w-fit gap-2">
         <Button variant="ghost" size="icon" onClick={() => setTheme('dark')}>
-          <Moon />
+          <Moon strokeWidth={1.5} size={20} />
         </Button>
         <Button variant="ghost" size="icon" onClick={() => setTheme('light')}>
-          <Sun />
+          <Sun strokeWidth={1.5} size={20} />
         </Button>
         <Button variant="ghost" size="icon" onClick={() => setTheme('system')}>
-          <Monitor />
+          <Monitor strokeWidth={1.5} size={20} />
         </Button>
       </div>
     </div>
   )
 }
 
-function ListItem({ children, color }: { children: string; color: string }) {
+function ListItem({
+  children,
+  color,
+  theme,
+}: {
+  children: string
+  color: string
+  theme: string
+}) {
   return (
     <div className="flex items-center gap-2">
       <div
-        className="h-4 w-4 rounded-sm"
-        style={{ backgroundColor: hexToRgba(color, '0.2') }}
+        className={cn('h-4 w-4 rounded-sm', theme === 'dark' && 'border')}
+        style={{ backgroundColor: hexToRgba(color, theme) }}
       />
       <p>{children}</p>
     </div>
   )
 }
 
-function hexToRgba(hex: string, alpha: string) {
+function hexToRgba(hex: string, theme: string) {
+  const alpha = theme === 'dark' ? 0.5 : 0.2
   const r = parseInt(hex.slice(1, 3), 16)
   const g = parseInt(hex.slice(3, 5), 16)
   const b = parseInt(hex.slice(5, 7), 16)
