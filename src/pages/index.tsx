@@ -61,10 +61,12 @@ export default function Home() {
   return (
     <div className="container flex max-h-svh gap-4 p-4">
       {isLargeScreen && isMenuVisible ? (
-        <MenuSidebar
-          setSidebarVisibility={setMenuVisibility}
-          isSidebarVisible={isMenuVisible}
-        />
+        <div className="hidden w-80 flex-none lg:block">
+          <MenuSidebar
+            setSidebarVisibility={setMenuVisibility}
+            isSidebarVisible={isMenuVisible}
+          />
+        </div>
       ) : !isLargeScreen && isMenuVisible ? (
         <MenuDrawer
           isDrawerOpen={isMenuVisible}
