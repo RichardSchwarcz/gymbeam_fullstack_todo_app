@@ -5,8 +5,10 @@ import { Menu, PlusIcon } from 'lucide-react'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import EditTaskSidebar from '~/components/edit-task-sidebar'
+import { MenuDrawer } from '~/components/menu-drawer'
 import MenuSidebar from '~/components/menu-sidebar'
 import NewTaskSidebar from '~/components/new-task-sidebar'
+import { TaskDrawer } from '~/components/task-drawer'
 import { Button } from '~/components/ui/button'
 import { Checkbox } from '~/components/ui/checkbox'
 import {
@@ -41,6 +43,12 @@ export default function Home() {
     }
   }, [])
 
+  useEffect(() => {
+    if (isNewTaskBarVisible && isMenuVisible && !isLargeScreen) {
+      setMenuVisibility(false)
+    }
+  }, [isLargeScreen, isNewTaskBarVisible, isMenuVisible])
+
   const queryKey = getQueryKey(api.task.getTasks)
   const { mutate } = api.task.updateTaskStatus.useMutation({
     onSuccess: () => {
@@ -53,12 +61,15 @@ export default function Home() {
   return (
     <div className="container flex max-h-svh gap-4 p-4">
       {isLargeScreen && isMenuVisible ? (
-        <div className="hidden lg:block">
-          <MenuSidebar
-            setSidebarVisibility={setMenuVisibility}
-            isSidebarVisible={isMenuVisible}
-          />
-        </div>
+        <MenuSidebar
+          setSidebarVisibility={setMenuVisibility}
+          isSidebarVisible={isMenuVisible}
+        />
+      ) : !isLargeScreen && isMenuVisible ? (
+        <MenuDrawer
+          isDrawerOpen={isMenuVisible}
+          setIsDrawerOpen={setMenuVisibility}
+        />
       ) : (
         <div className="pt-4">
           <Button
@@ -132,6 +143,11 @@ export default function Home() {
         <NewTaskSidebar
           isTaskbarVisible={isNewTaskBarVisible}
           setTaskbarVisibility={setNewTaskBarVisibility}
+        />
+      ) : !isLargeScreen && isNewTaskBarVisible ? (
+        <TaskDrawer
+          isDrawerOpen={isNewTaskBarVisible}
+          setIsDrawerOpen={setNewTaskBarVisibility}
         />
       ) : null}
       {isEditTaskBarVisible ? (
