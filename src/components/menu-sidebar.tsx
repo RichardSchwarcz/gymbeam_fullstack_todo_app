@@ -189,7 +189,7 @@ export default function MenuSidebar({
         </div>
       </div>
 
-      <div className="flex w-fit gap-2">
+      <div className="flex w-fit gap-2 py-4">
         <Button variant="ghost" size="icon" onClick={() => setTheme('dark')}>
           <Moon strokeWidth={1.5} size={20} />
         </Button>

@@ -266,8 +266,8 @@ export default function TaskSidebar({
         </form>
       </div>
 
-      <div className="flex justify-between">
-        {taskAction === 'editTask' && typeof task === 'string' && (
+      <div className="flex justify-between py-4">
+        {taskAction === 'editTask' && typeof task === 'string' ? (
           <Button
             variant="outline"
             onClick={() => {
@@ -276,6 +276,8 @@ export default function TaskSidebar({
           >
             Delete Task
           </Button>
+        ) : (
+          <div className="h-10 w-10" />
         )}
         <Button
           onClick={() => {
