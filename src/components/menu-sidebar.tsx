@@ -15,6 +15,7 @@ import {
 import { useTheme } from 'next-themes'
 import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
 import { Button } from '~/components/ui/button'
+import { hexToRgba } from '~/lib/hextToRrgba'
 import { cn } from '~/lib/utils'
 import { api } from '~/utils/api'
 import { MenuSeparator } from './menu-separator'
@@ -223,13 +224,4 @@ function ListItem({
       <p>{children}</p>
     </div>
   )
-}
-
-function hexToRgba(hex: string, theme: string) {
-  const alpha = theme === 'dark' ? 0.5 : 0.2
-  const r = parseInt(hex.slice(1, 3), 16)
-  const g = parseInt(hex.slice(3, 5), 16)
-  const b = parseInt(hex.slice(5, 7), 16)
-
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`
 }
