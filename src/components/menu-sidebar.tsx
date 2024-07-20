@@ -4,6 +4,7 @@ import { getQueryKey } from '@trpc/react-query'
 import {
   ChevronsLeft,
   ChevronsRight,
+  CircleAlert,
   ListTodo,
   Monitor,
   Moon,
@@ -96,6 +97,13 @@ export default function MenuSidebar({
           >
             <ListTodo strokeWidth={1.5} />
             <p>Today</p>
+          </Button>
+          <Button
+            className="w-full items-center justify-start gap-2 px-2"
+            variant="ghost"
+          >
+            <CircleAlert strokeWidth={1.5} />
+            <p>Overdue</p>
           </Button>
         </div>
 
