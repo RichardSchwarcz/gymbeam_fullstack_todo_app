@@ -24,7 +24,7 @@ import { api } from '~/utils/api'
 
 export default function Home() {
   const router = useRouter()
-  const [isMenuVisible, setMenuVisibility] = useState(true)
+  const [isMenuVisible, setMenuVisibility] = useState(false)
   const [isNewTaskBarVisible, setNewTaskBarVisibility] = useState(false)
   const [isEditTaskBarVisible, setEditTaskBarVisibility] = useState(false)
   const [isLargeScreen, setIsLargeScreen] = useState(true)
