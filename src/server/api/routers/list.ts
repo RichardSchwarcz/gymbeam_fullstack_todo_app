@@ -17,4 +17,13 @@ export const ListRouter = createTRPCRouter({
   getLists: publicProcedure.query(async ({ ctx }) => {
     return ctx.db.list.findMany()
   }),
+  deleteList: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.list.delete({
+        where: {
+          id: input.id,
+        },
+      })
+    }),
 })
