@@ -26,4 +26,16 @@ export const ListRouter = createTRPCRouter({
         },
       })
     }),
+  updateList: publicProcedure
+    .input(z.object({ id: z.string(), list: z.string().min(3) }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.list.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          list: input.list,
+        },
+      })
+    }),
 })
