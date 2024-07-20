@@ -5,11 +5,13 @@ import {
   ChevronsLeft,
   ChevronsRight,
   CircleAlert,
+  EllipsisVertical,
   ListTodo,
   Monitor,
   Moon,
   PlusIcon,
   Sun,
+  Trash2Icon,
   X,
 } from 'lucide-react'
 import { useTheme } from 'next-themes'
@@ -27,6 +29,9 @@ import { api } from '~/utils/api'
 import { MenuSeparator } from './menu-separator'
 import ReactiveInput from './reactive-input'
 import SidebarContainer from './sidebar-container'
+import { Command } from './ui/command'
+import { Input } from './ui/input'
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover'
 
 export default function MenuSidebar({
   isSidebarVisible,
@@ -123,6 +128,7 @@ export default function MenuSidebar({
               return (
                 <ListItem
                   color={list.color}
+                  id={list.id}
                   key={list.id}
                   theme={resolvedTheme!}
                 >
@@ -215,18 +221,57 @@ function ListItem({
   children,
   color,
   theme,
+  id,
 }: {
+  id: string
   children: string
   color: string
   theme: string
 }) {
+  const [renamedItem, setRenamedItem] = useState('')
+  const queryClient = useQueryClient()
+
+  const { mutate: deleteList } = api.list.deleteList.useMutation({
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: getQueryKey(api.list.getLists),
+      })
+    },
+  })
   return (
-    <div className="flex items-center gap-2">
-      <div
-        className={cn('h-4 w-4 rounded-sm', theme === 'dark' && 'border')}
-        style={{ backgroundColor: hexToRgba(color, theme) }}
-      />
-      <p>{children}</p>
+    <div className="flex items-center justify-between">
+      <div className="flex items-center gap-2">
+        <div
+          className={cn('h-4 w-4 rounded-sm', theme === 'dark' && 'border')}
+          style={{ backgroundColor: hexToRgba(color, theme) }}
+        />
+
+        <p>{children}</p>
+      </div>
+
+      <Popover>
+        <PopoverTrigger asChild>
+          <button>
+            <EllipsisVertical size={18} />
+          </button>
+        </PopoverTrigger>
+        <PopoverContent className="w-[200px]">
+          <Command>
+            <Input
+              className="focus-visible:ring-0"
+              defaultValue={children}
+              onChange={(e) => setRenamedItem(e.target.value)}
+            />
+            <button
+              onClick={() => deleteList({ id })}
+              className="mt-2 flex cursor-pointer items-center gap-2 rounded-md p-2 hover:bg-red-50"
+            >
+              <Trash2Icon size={18} />
+              <div className="font-bold">Delete</div>
+            </button>
+          </Command>
+        </PopoverContent>
+      </Popover>
     </div>
   )
 }
