@@ -196,11 +196,11 @@ export const MultiSelect = React.forwardRef<
         >
           <Command>
             <CommandInput
-              placeholder="Hľadať..."
+              placeholder="Search..."
               onKeyDown={handleInputKeyDown}
             />
             <CommandList>
-              <CommandEmpty>Prázdne</CommandEmpty>
+              <CommandEmpty>Empty</CommandEmpty>
               <CommandGroup>
                 {options.map((option) => {
                   const isSelected = selectedValues.includes(option.value)
