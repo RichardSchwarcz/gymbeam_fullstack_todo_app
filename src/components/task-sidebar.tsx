@@ -98,7 +98,7 @@ export default function TaskSidebar({
   })
 
   useEffect(() => {
-    if (taskData && isSuccess) {
+    if (taskData && isSuccess && taskAction === 'editTask') {
       const parsedData = {
         ...taskData,
         list: taskData.list.id,
@@ -234,12 +234,12 @@ export default function TaskSidebar({
             <Controller
               control={form.control}
               name="tags"
-              render={() => {
+              render={({ field }) => {
                 return (
                   <MultiSelect
                     key={key}
                     placeholder="Add Tags"
-                    defaultValue={taskData?.tags.map((tag) => tag.id) ?? []}
+                    defaultValue={field.value.map((tag) => tag.id)}
                     options={
                       tags?.map((tag) => ({
                         label: tag.tag,
