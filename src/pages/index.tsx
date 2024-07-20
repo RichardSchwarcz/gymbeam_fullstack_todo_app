@@ -142,10 +142,12 @@ export default function Home() {
         </Table>
       </div>
       {isLargeScreen && isNewTaskBarVisible ? (
-        <NewTaskSidebar
-          isTaskbarVisible={isNewTaskBarVisible}
-          setTaskbarVisibility={setNewTaskBarVisibility}
-        />
+        <div className="w-72 flex-none">
+          <NewTaskSidebar
+            isTaskbarVisible={isNewTaskBarVisible}
+            setTaskbarVisibility={setNewTaskBarVisibility}
+          />
+        </div>
       ) : !isLargeScreen && isNewTaskBarVisible ? (
         <TaskDrawer
           isDrawerOpen={isNewTaskBarVisible}
