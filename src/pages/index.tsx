@@ -2,9 +2,11 @@ import { useQueryClient } from '@tanstack/react-query'
 import { getQueryKey } from '@trpc/react-query'
 import { format } from 'date-fns'
 import { Menu, PlusIcon } from 'lucide-react'
+import { useRouter } from 'next/router'
 import { useState } from 'react'
+import EditTaskSidebar from '~/components/edit-task-sidebar'
 import MenuSidebar from '~/components/menu-sidebar'
-import TaskSidebar from '~/components/task-sidebar'
+import NewTaskSidebar from '~/components/new-task-sidebar'
 import { Button } from '~/components/ui/button'
 import { Checkbox } from '~/components/ui/checkbox'
 import {
@@ -19,8 +21,10 @@ import { cn } from '~/lib/utils'
 import { api } from '~/utils/api'
 
 export default function Home() {
+  const router = useRouter()
   const [isMenuVisible, setMenuVisibility] = useState(true)
-  const [isTaskBarVisible, setTaskBarVisibility] = useState(false)
+  const [isNewTaskBarVisible, setNewTaskBarVisibility] = useState(false)
+  const [isEditTaskBarVisible, setEditTaskBarVisibility] = useState(false)
   const queryClient = useQueryClient()
 
   const queryKey = getQueryKey(api.task.getTasks)
@@ -53,7 +57,10 @@ export default function Home() {
       <div className="scrollbar-thin w-full rounded-3xl p-4">
         <button
           className="flex w-full gap-4 border-b border-slate-200 py-4 text-left text-slate-400"
-          onClick={() => setTaskBarVisibility(true)}
+          onClick={() => {
+            setNewTaskBarVisibility(true)
+            setEditTaskBarVisibility(false)
+          }}
         >
           <PlusIcon />
           Add New Task
@@ -73,6 +80,11 @@ export default function Home() {
               return (
                 <TableRow
                   key={task.id}
+                  onClick={() => {
+                    void router.push(`/?task=${task.id}`)
+                    setEditTaskBarVisibility(true)
+                    setNewTaskBarVisibility(false)
+                  }}
                   className={cn(
                     'h-14',
                     task.completed && 'bg-red-50/40 line-through'
@@ -100,10 +112,16 @@ export default function Home() {
           </TableBody>
         </Table>
       </div>
-      {isTaskBarVisible ? (
-        <TaskSidebar
-          isTaskbarVisible={isTaskBarVisible}
-          setTaskbarVisibility={setTaskBarVisibility}
+      {isNewTaskBarVisible ? (
+        <NewTaskSidebar
+          isTaskbarVisible={isNewTaskBarVisible}
+          setTaskbarVisibility={setNewTaskBarVisibility}
+        />
+      ) : null}
+      {isEditTaskBarVisible ? (
+        <EditTaskSidebar
+          isTaskbarVisible={isEditTaskBarVisible}
+          setTaskbarVisibility={setEditTaskBarVisibility}
         />
       ) : null}
     </div>
