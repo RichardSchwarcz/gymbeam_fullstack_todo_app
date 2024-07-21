@@ -182,7 +182,7 @@ export default function MenuSidebar({
                   }}
                 >
                   <p>{tag.tag}</p>
-                  <X className="h-5 w-5 cursor-pointer rounded-sm p-1 hover:bg-red-400" />
+                  <X className="h-5 w-5 cursor-pointer rounded-sm p-1 hover:bg-destructive" />
                 </div>
               )
             })}
