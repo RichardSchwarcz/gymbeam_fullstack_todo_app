@@ -42,16 +42,23 @@ export const taskRouter = createTRPCRouter({
         },
       })
     }),
-  getTasks: publicProcedure.query(async ({ ctx }) => {
-    return ctx.db.task.findMany({
-      include: {
-        tags: true,
-      },
-      orderBy: {
-        completed: 'asc',
-      },
-    })
-  }),
+  getTasks: publicProcedure
+    .input(z.object({ list: z.string().optional() }))
+    .query(async ({ ctx, input }) => {
+      return ctx.db.task.findMany({
+        where: {
+          list: {
+            list: input.list,
+          },
+        },
+        include: {
+          tags: true,
+        },
+        orderBy: {
+          completed: 'asc',
+        },
+      })
+    }),
   getTasksGroupedByDate: publicProcedure.query(async ({ ctx }) => {
     const tasks = await ctx.db.task.findMany({
       select: {
