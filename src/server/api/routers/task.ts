@@ -47,6 +47,9 @@ export const taskRouter = createTRPCRouter({
       include: {
         tags: true,
       },
+      orderBy: {
+        completed: 'asc',
+      },
     })
   }),
   getTasksGroupedByDate: publicProcedure.query(async ({ ctx }) => {
