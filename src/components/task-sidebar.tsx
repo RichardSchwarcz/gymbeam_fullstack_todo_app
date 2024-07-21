@@ -122,9 +122,13 @@ export default function TaskSidebar({
       <div>
         <div className="mb-4 flex items-center justify-between">
           {taskAction === 'editTask' ? (
-            <p className="text-xl font-bold">Edit Task</p>
+            <p className="text-2xl">
+              Edit <span className="text-primary">Task</span>
+            </p>
           ) : (
-            <p className="text-xl font-bold">New Task</p>
+            <p className="text-2xl">
+              New <span className="text-primary">Task</span>
+            </p>
           )}
           <Button
             size="icon"
@@ -143,7 +147,7 @@ export default function TaskSidebar({
         <form>
           <div className="mb-4 flex flex-col gap-4">
             <div className="flex flex-col">
-              <p className="text-sm font-semibold text-slate-500">Task</p>
+              <SectionTitle>Task</SectionTitle>
               <Controller
                 name="task"
                 control={form.control}
@@ -153,9 +157,7 @@ export default function TaskSidebar({
               />
             </div>
             <div className="flex flex-col">
-              <p className="text-sm font-semibold text-slate-500">
-                Description
-              </p>
+              <SectionTitle>Description</SectionTitle>
               <Controller
                 name="description"
                 control={form.control}
@@ -173,7 +175,7 @@ export default function TaskSidebar({
           <MenuSeparator />
 
           <div className="mb-4 flex flex-col">
-            <p className="text-sm font-semibold text-slate-500">List</p>
+            <SectionTitle>List</SectionTitle>
             <Controller
               control={form.control}
               name="list"
@@ -181,7 +183,7 @@ export default function TaskSidebar({
                 return (
                   <Select onValueChange={field.onChange} value={field.value}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Pick A List" />
+                      <SelectValue placeholder="Select list" />
                     </SelectTrigger>
                     <SelectContent>
                       {lists?.map((list) => {
@@ -199,7 +201,7 @@ export default function TaskSidebar({
           </div>
 
           <div className="mb-4 flex flex-col">
-            <p className="text-sm font-semibold text-slate-500">Priority</p>
+            <SectionTitle>Priority</SectionTitle>
             <Controller
               control={form.control}
               name="priority"
@@ -228,7 +230,7 @@ export default function TaskSidebar({
           </div>
 
           <div className="mb-4 flex flex-col">
-            <p className="text-sm font-semibold text-slate-500">Due Date</p>
+            <SectionTitle>Due Date</SectionTitle>
             <DatePicker<z.infer<typeof formSchema>>
               name="dueDate"
               control={form.control}
@@ -238,7 +240,7 @@ export default function TaskSidebar({
           <MenuSeparator />
 
           <div className="flex flex-col">
-            <p className="text-sm font-semibold text-slate-500">Tags</p>
+            <SectionTitle>Tags</SectionTitle>
             <Controller
               control={form.control}
               name="tags"
@@ -300,4 +302,8 @@ export default function TaskSidebar({
       </div>
     </SidebarContainer>
   )
+}
+
+function SectionTitle({ children }: { children: string }) {
+  return <p className="text-sm text-muted-foreground">{children}</p>
 }
