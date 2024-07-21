@@ -71,6 +71,7 @@
 
 .scrollbar-thin {
   overflow-y: auto;
+  overflow-x: auto;
 }
 
 .scrollbar-thin::-webkit-scrollbar {
