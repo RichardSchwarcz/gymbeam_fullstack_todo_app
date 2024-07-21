@@ -36,6 +36,7 @@ yarn-error.log*
 .env
 .env*.local
 db-script.sh
+db-seed.sh
 
 # vercel
 .vercel
