@@ -1,5 +1,3 @@
-import { useQueryClient } from '@tanstack/react-query'
-import { getQueryKey } from '@trpc/react-query'
 import { format } from 'date-fns'
 import { FilterX, Menu, PlusIcon } from 'lucide-react'
 import { useTheme } from 'next-themes'
@@ -7,10 +5,10 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { MenuDrawer } from '~/components/menu-drawer'
 import MenuSidebar from '~/components/menu-sidebar'
+import OptimisticCheckbox from '~/components/optimistic-checkbox'
 import { TaskDrawer } from '~/components/task-drawer'
 import TaskSidebar from '~/components/task-sidebar'
 import { Button } from '~/components/ui/button'
-import { Checkbox } from '~/components/ui/checkbox'
 import {
   Table,
   TableBody,
@@ -34,20 +32,12 @@ export default function Home() {
   const [isNewTaskBarVisible, setNewTaskBarVisibility] = useState(false)
   const [isEditTaskBarVisible, setEditTaskBarVisibility] = useState(false)
   const isLargeScreen = useMediaQuery('(min-width: 1280px)')
-  const queryClient = useQueryClient()
 
   useEffect(() => {
     if (isNewTaskBarVisible && isMenuVisible && !isLargeScreen) {
       setMenuVisibility(false)
     }
   }, [isLargeScreen, isNewTaskBarVisible, isMenuVisible])
-
-  const queryKey = getQueryKey(api.task.getTasks)
-  const { mutate } = api.task.updateTaskStatus.useMutation({
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey })
-    },
-  })
 
   const { data: tasks } = api.task.getTasks.useQuery({
     list,
@@ -139,13 +129,7 @@ export default function Home() {
                   )}
                 >
                   <TableCell>
-                    <Checkbox
-                      checked={task.completed}
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        mutate({ id: task.id, completed: !task.completed })
-                      }}
-                    />
+                    <OptimisticCheckbox task={task} />
                   </TableCell>
                   <TableCell className="font-semibold">{task.task}</TableCell>
                   <TableCell className="hidden sm:table-cell">
