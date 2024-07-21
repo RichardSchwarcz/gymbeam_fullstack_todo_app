@@ -91,6 +91,9 @@ export default function Home() {
             <PlusIcon size={18} />
             Add New Task
           </Button>
+          <Button variant="outline" onClick={() => router.push('/')}>
+            Clear Filter
+          </Button>
         </div>
         <Table>
           <TableHeader>
