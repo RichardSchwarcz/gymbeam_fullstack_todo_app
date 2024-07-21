@@ -4,6 +4,7 @@ import { type AppType } from 'next/app'
 import { api } from '~/utils/api'
 
 import { ThemeProvider } from 'next-themes'
+import { Toaster } from '~/components/ui/toaster'
 import '~/styles/globals.css'
 
 const MyApp: AppType = ({ Component, pageProps }) => {
@@ -16,6 +17,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
     >
       <div className={GeistSans.className}>
         <Component {...pageProps} />
+        <Toaster />
       </div>
     </ThemeProvider>
   )
