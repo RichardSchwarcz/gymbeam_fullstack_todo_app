@@ -11,9 +11,9 @@ export default function SidebarContainer({
   return (
     <div
       className={cn(
-        'scrollbar-thin flex flex-col justify-between rounded-3xl bg-stone-50 p-4',
+        'scrollbar-thin flex flex-col justify-between rounded-3xl bg-card p-4',
         isLargeScreen
-          ? 'min-h-[calc(100vh-2rem)]'
+          ? 'min-h-[calc(100vh-2rem)] border shadow'
           : 'h-screen overflow-y-scroll'
       )}
     >
