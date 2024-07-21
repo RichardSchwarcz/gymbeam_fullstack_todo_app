@@ -21,6 +21,7 @@ import {
   SelectValue,
 } from './ui/select'
 import { Textarea } from './ui/textarea'
+import { toast } from './ui/use-toast'
 
 const formSchema = z.object({
   task: z
@@ -91,19 +92,31 @@ export default function TaskSidebar({
   }
 
   const { mutate: createTask } = api.task.createTask.useMutation({
-    onSuccess: () => {
+    onSuccess: (task) => {
       onSuccessfulMutation()
+      toast({
+        title: 'Task added to a list.',
+        description: task.task,
+      })
     },
   })
   const { mutate: updateTaskProperties } =
     api.task.updateTaskProperties.useMutation({
-      onSuccess: () => {
+      onSuccess: (task) => {
         onSuccessfulMutation()
+        toast({
+          title: 'Task updated.',
+          description: task.task,
+        })
       },
     })
   const { mutate: deleteTask } = api.task.deleteTask.useMutation({
-    onSuccess: () => {
+    onSuccess: (task) => {
       onSuccessfulMutation()
+      toast({
+        title: 'Task deleted.',
+        description: task.task,
+      })
     },
   })
 
@@ -304,9 +317,9 @@ export default function TaskSidebar({
           <div className="h-10 w-10" />
         )}
         <Button
-          onClick={() => {
+          onClick={async () => {
             if (taskAction === 'editTask' && typeof task === 'string') {
-              void form.trigger()
+              await form.trigger()
               if (form.formState.isValid) {
                 updateTaskProperties({
                   ...form.getValues(),
@@ -315,7 +328,7 @@ export default function TaskSidebar({
               }
             }
             if (taskAction === 'newTask') {
-              void form.trigger()
+              await form.trigger()
               if (form.formState.isValid) {
                 createTask(form.getValues())
               }

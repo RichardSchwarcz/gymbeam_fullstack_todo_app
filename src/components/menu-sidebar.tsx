@@ -33,6 +33,7 @@ import SidebarContainer from './sidebar-container'
 import { Command } from './ui/command'
 import { Input } from './ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover'
+import { toast } from './ui/use-toast'
 
 export default function MenuSidebar({
   isSidebarVisible,
@@ -51,28 +52,40 @@ export default function MenuSidebar({
 
   const queryClient = useQueryClient()
   const { mutate: createTag } = api.tag.createTag.useMutation({
-    onSuccess: () => {
+    onSuccess: (tag) => {
       void queryClient.invalidateQueries({
         queryKey: getQueryKey(api.tag.getTags),
       })
       setNewTagInputVisibility(false)
+      toast({
+        title: 'Tag created.',
+        description: tag.tag,
+      })
     },
   })
   const { mutate: createList } = api.list.createList.useMutation({
-    onSuccess: () => {
+    onSuccess: (list) => {
       void queryClient.invalidateQueries({
         queryKey: getQueryKey(api.list.getLists),
       })
       setNewListInputVisibility(false)
+      toast({
+        title: 'List created.',
+        description: list.list,
+      })
     },
   })
   const { mutate: deleteTag } = api.tag.deleteTag.useMutation({
-    onSuccess: () => {
+    onSuccess: (tag) => {
       void queryClient.invalidateQueries({
         queryKey: getQueryKey(api.tag.getTags),
       })
       void queryClient.invalidateQueries({
         queryKey: getQueryKey(api.task.getTasks),
+      })
+      toast({
+        title: 'Tag deleted.',
+        description: tag.tag,
       })
     },
   })
@@ -270,16 +283,24 @@ function ListItem({
   const isCurrentList = router.query.list === children
 
   const { mutate: deleteList } = api.list.deleteList.useMutation({
-    onSuccess: () => {
+    onSuccess: (list) => {
       void queryClient.invalidateQueries({
         queryKey: getQueryKey(api.list.getLists),
+      })
+      toast({
+        title: 'List deleted.',
+        description: list.list,
       })
     },
   })
   const { mutate: updateList } = api.list.updateList.useMutation({
-    onSuccess: () => {
+    onSuccess: (list) => {
       void queryClient.invalidateQueries({
         queryKey: getQueryKey(api.list.getLists),
+      })
+      toast({
+        title: 'List updated.',
+        description: list.list,
       })
     },
   })
