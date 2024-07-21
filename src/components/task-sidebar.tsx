@@ -1,9 +1,10 @@
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
 import { getQueryKey } from '@trpc/react-query'
 import { X } from 'lucide-react'
 import { useRouter } from 'next/router'
 import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
-import { Controller, useForm } from 'react-hook-form'
+import { Controller, useForm, useFormState } from 'react-hook-form'
 import { z } from 'zod'
 import { Button } from '~/components/ui/button'
 import { api } from '~/utils/api'
@@ -22,16 +23,18 @@ import {
 import { Textarea } from './ui/textarea'
 
 const formSchema = z.object({
-  task: z.string(),
+  task: z
+    .string({ required_error: 'Please enter a task title' })
+    .min(3, { message: 'Task must be at least 3 characters long.' }),
   description: z.string().optional(),
-  list: z.string(),
+  list: z.string({ required_error: 'Please select a todo list' }),
   priority: z.union([
-    z.literal('low'),
-    z.literal('medium'),
-    z.literal('high'),
-    z.literal('urgent'),
+    z.literal('low', { message: 'Please select task priority' }),
+    z.literal('medium', { message: 'Please select task priority' }),
+    z.literal('high', { message: 'Please select task priority' }),
+    z.literal('urgent', { message: 'Please select task priority' }),
   ]),
-  dueDate: z.date(),
+  dueDate: z.date({ required_error: 'Please pick a date' }),
   tags: z.array(
     z.object({
       id: z.string(),
@@ -57,14 +60,13 @@ export default function TaskSidebar({
     task: string | undefined
   }
   const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
-      task: '',
-      description: '',
-      list: '',
-      priority: 'low',
       tags: [],
     },
+    mode: 'onSubmit',
   })
+  const formState = useFormState({ control: form.control })
 
   const { data: tags } = api.tag.getTags.useQuery()
   const { data: lists } = api.list.getLists.useQuery()
@@ -158,6 +160,10 @@ export default function TaskSidebar({
                 control={form.control}
                 render={({ field }) => <Input {...field} placeholder="Title" />}
               />
+
+              <p className="text-destructive">
+                {formState.errors.task?.message}
+              </p>
             </div>
             <div className="flex flex-col">
               <SectionTitle>Description</SectionTitle>
@@ -201,6 +207,8 @@ export default function TaskSidebar({
                 )
               }}
             />
+
+            <p className="text-destructive">{formState.errors.list?.message}</p>
           </div>
 
           <div className="mb-4 flex flex-col">
@@ -230,6 +238,10 @@ export default function TaskSidebar({
                 )
               }}
             />
+
+            <p className="text-destructive">
+              {formState.errors.priority?.message}
+            </p>
           </div>
 
           <div className="mb-4 flex flex-col">
@@ -238,6 +250,10 @@ export default function TaskSidebar({
               name="dueDate"
               control={form.control}
             />
+
+            <p className="text-destructive">
+              {formState.errors.dueDate?.message}
+            </p>
           </div>
 
           <MenuSeparator />
@@ -290,13 +306,19 @@ export default function TaskSidebar({
         <Button
           onClick={() => {
             if (taskAction === 'editTask' && typeof task === 'string') {
-              updateTaskProperties({
-                ...form.getValues(),
-                id: task,
-              })
+              void form.trigger()
+              if (form.formState.isValid) {
+                updateTaskProperties({
+                  ...form.getValues(),
+                  id: task,
+                })
+              }
             }
             if (taskAction === 'newTask') {
-              createTask(form.getValues())
+              void form.trigger()
+              if (form.formState.isValid) {
+                createTask(form.getValues())
+              }
             }
           }}
         >
@@ -308,5 +330,5 @@ export default function TaskSidebar({
 }
 
 function SectionTitle({ children }: { children: string }) {
-  return <p className="text-sm text-muted-foreground">{children}</p>
+  return <p className="text-muted-foreground">{children}</p>
 }
