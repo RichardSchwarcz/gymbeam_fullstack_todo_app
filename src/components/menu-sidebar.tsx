@@ -255,6 +255,7 @@ function ListItem({
   const [renamedItem, setRenamedItem] = useState('')
   const queryClient = useQueryClient()
   const router = useRouter()
+  const isCurrentList = router.query.list === children
 
   const { mutate: deleteList } = api.list.deleteList.useMutation({
     onSuccess: () => {
@@ -288,7 +289,10 @@ function ListItem({
     <div className="flex items-center justify-between">
       <Button
         variant="ghost"
-        className="w-full justify-start gap-2"
+        className={cn(
+          'w-full justify-start gap-2',
+          isCurrentList && 'bg-secondary'
+        )}
         onClick={() =>
           router.push({ pathname: '/', query: { list: children } })
         }
