@@ -23,7 +23,7 @@ import {
   type SetStateAction,
 } from 'react'
 import { Button } from '~/components/ui/button'
-import { hexToRgba } from '~/lib/hextToRrgba'
+import { getAlphaByTheme, hexToRgba } from '~/lib/hextToRrgba'
 import { cn } from '~/lib/utils'
 import { api } from '~/utils/api'
 import { MenuSeparator } from './menu-separator'
@@ -175,7 +175,10 @@ export default function MenuSidebar({
                   key={tag.id}
                   className="flex w-fit items-center gap-1 rounded-lg border px-2 py-1"
                   style={{
-                    backgroundColor: hexToRgba(tag.color, resolvedTheme!),
+                    backgroundColor: hexToRgba(
+                      tag.color,
+                      getAlphaByTheme(resolvedTheme!)
+                    ),
                   }}
                 >
                   <p>{tag.tag}</p>
@@ -284,7 +287,9 @@ function ListItem({
       <Button variant="ghost" className="w-full justify-start gap-2">
         <div
           className={cn('h-4 w-4 rounded-sm', theme === 'dark' && 'border')}
-          style={{ backgroundColor: hexToRgba(color, theme) }}
+          style={{
+            backgroundColor: hexToRgba(color, getAlphaByTheme(theme)),
+          }}
         />
 
         <p>{children}</p>

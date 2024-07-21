@@ -20,7 +20,7 @@ import {
   TableRow,
 } from '~/components/ui/table'
 import useMediaQuery from '~/hooks/useMediaQuery'
-import { hexToRgba } from '~/lib/hextToRrgba'
+import { getAlphaByTheme, hexToRgba } from '~/lib/hextToRrgba'
 import priorityColors from '~/lib/priorityColors'
 import { cn } from '~/lib/utils'
 import { api } from '~/utils/api'
@@ -136,7 +136,7 @@ export default function Home() {
                           style={{
                             backgroundColor: hexToRgba(
                               tag.color,
-                              resolvedTheme!
+                              getAlphaByTheme(resolvedTheme!)
                             ),
                           }}
                         >
@@ -151,7 +151,7 @@ export default function Home() {
                       style={{
                         backgroundColor: hexToRgba(
                           priorityColors(task.priority),
-                          resolvedTheme!
+                          getAlphaByTheme(resolvedTheme!)
                         ),
                       }}
                     >
