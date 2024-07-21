@@ -108,6 +108,7 @@ export default function MenuSidebar({
           <TaskButton
             data={groupedTasksByDueDate?.todaysTasks.length}
             icon={<ListTodo strokeWidth={1.5} />}
+            className="bg-primary text-secondary"
           >
             Today
           </TaskButton>
@@ -303,10 +304,12 @@ function TaskButton({
   children,
   data,
   icon,
+  className,
 }: {
   children: string
   data: number | undefined
   icon: ReactNode
+  className?: string
 }) {
   return (
     <Button className="w-full items-center px-2" variant="ghost">
@@ -315,7 +318,14 @@ function TaskButton({
           {icon}
           <p>{children}</p>
         </div>
-        <p className="rounded-md border bg-white px-2 py-1 font-bold">{data}</p>
+        <p
+          className={cn(
+            'w-8 rounded-md border bg-secondary px-2 py-1 font-bold',
+            className
+          )}
+        >
+          {data}
+        </p>
       </div>
     </Button>
   )
