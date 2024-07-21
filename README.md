@@ -23,7 +23,7 @@ To get a local copy up and running, follow these steps:
 
 ### Prerequisites
 
-Make sure you have Node.js installed.
+Make sure you have Node.js and Docker installed.
 
 ### Installation
 
