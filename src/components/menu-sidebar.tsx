@@ -40,7 +40,7 @@ export default function MenuSidebar({
   isSidebarVisible: boolean
   setSidebarVisibility: Dispatch<SetStateAction<boolean>>
 }) {
-  const { setTheme, resolvedTheme } = useTheme()
+  const { setTheme, resolvedTheme, theme } = useTheme()
   const [isNewTagInputVisible, setNewTagInputVisibility] = useState(false)
   const [isNewListInputVisible, setNewListInputVisibility] = useState(false)
   const { data: tags } = api.tag.getTags.useQuery()
@@ -208,13 +208,28 @@ export default function MenuSidebar({
       </div>
 
       <div className="flex w-fit gap-2 py-4">
-        <Button variant="ghost" size="icon" onClick={() => setTheme('dark')}>
+        <Button
+          className={cn(theme === 'dark' && 'border')}
+          variant="ghost"
+          size="icon"
+          onClick={() => setTheme('dark')}
+        >
           <Moon strokeWidth={1.5} size={20} />
         </Button>
-        <Button variant="ghost" size="icon" onClick={() => setTheme('light')}>
+        <Button
+          className={cn(theme === 'light' && 'border')}
+          variant="ghost"
+          size="icon"
+          onClick={() => setTheme('light')}
+        >
           <Sun strokeWidth={1.5} size={20} />
         </Button>
-        <Button variant="ghost" size="icon" onClick={() => setTheme('system')}>
+        <Button
+          className={cn(theme === 'system' && 'border')}
+          variant="ghost"
+          size="icon"
+          onClick={() => setTheme('system')}
+        >
           <Monitor strokeWidth={1.5} size={20} />
         </Button>
       </div>
