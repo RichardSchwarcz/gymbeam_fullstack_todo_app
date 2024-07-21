@@ -294,7 +294,10 @@ function ListItem({
           isCurrentList && 'bg-secondary'
         )}
         onClick={() =>
-          router.push({ pathname: '/', query: { list: children } })
+          router.push({
+            pathname: '/',
+            query: { ...router.query, list: children },
+          })
         }
       >
         <div
@@ -348,8 +351,23 @@ function TaskButton({
   icon: ReactNode
   className?: string
 }) {
+  const router = useRouter()
+  const isCurrentTasks = router.query.due === children
+
   return (
-    <Button className="w-full items-center px-2" variant="ghost">
+    <Button
+      className={cn(
+        'w-full items-center px-2',
+        isCurrentTasks && 'bg-secondary'
+      )}
+      variant="ghost"
+      onClick={() =>
+        router.push({
+          pathname: '/',
+          query: { ...router.query, due: children },
+        })
+      }
+    >
       <div className="flex w-full items-center justify-between">
         <div className="flex items-center gap-2">
           {icon}
