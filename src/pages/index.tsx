@@ -111,7 +111,7 @@ export default function Home() {
                   }}
                   className={cn(
                     'h-14 cursor-pointer',
-                    task.completed && 'bg-red-50/40 line-through'
+                    task.completed && 'text-muted'
                   )}
                 >
                   <TableCell>
@@ -150,7 +150,8 @@ export default function Home() {
                       className="w-fit rounded-md px-2 py-1"
                       style={{
                         backgroundColor: hexToRgba(
-                          priorityColors(task.priority, resolvedTheme!)
+                          priorityColors(task.priority, resolvedTheme!),
+                          task.completed ? 0.5 : 1
                         ),
                         color: resolvedTheme === 'dark' ? 'black' : '',
                       }}
