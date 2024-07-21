@@ -150,9 +150,9 @@ export default function Home() {
                       className="w-fit rounded-md px-2 py-1"
                       style={{
                         backgroundColor: hexToRgba(
-                          priorityColors(task.priority),
-                          getAlphaByTheme(resolvedTheme!)
+                          priorityColors(task.priority, resolvedTheme!)
                         ),
+                        color: resolvedTheme === 'dark' ? 'black' : '',
                       }}
                     >
                       {task?.priority}
