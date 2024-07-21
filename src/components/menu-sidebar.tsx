@@ -98,7 +98,9 @@ export default function MenuSidebar({
         </div>
 
         <div className="flex flex-col">
-          <p className="mb-2 text-sm font-semibold text-slate-800">TASKS</p>
+          <p className="mb-2 text-sm font-semibold text-accent-foreground">
+            TASKS
+          </p>
           <TaskButton
             data={groupedTasksByDueDate?.upcomingTasks.length}
             icon={<ChevronsRight strokeWidth={1.5} />}
@@ -123,7 +125,9 @@ export default function MenuSidebar({
         <MenuSeparator />
 
         <div className="flex flex-col">
-          <p className="mb-2 text-sm font-semibold text-slate-800">LISTS</p>
+          <p className="mb-2 text-sm font-semibold text-accent-foreground">
+            LISTS
+          </p>
           <div className="flex flex-col gap-2">
             {lists?.map((list) => {
               return (
@@ -151,7 +155,7 @@ export default function MenuSidebar({
           )}
 
           <Button
-            className="mt-4 w-full justify-start gap-2 bg-transparent text-slate-500"
+            className="mt-4 w-full justify-start gap-2 text-accent-foreground"
             variant="outline"
             onClick={() => setNewListInputVisibility(true)}
           >
@@ -163,7 +167,7 @@ export default function MenuSidebar({
         <MenuSeparator />
 
         <div className="mb-4 flex flex-col gap-2">
-          <p className="text-sm font-semibold text-slate-800">TAGS</p>
+          <p className="text-sm font-semibold text-accent-foreground">TAGS</p>
           <div className="flex flex-wrap gap-2">
             {tags?.map((tag) => {
               return (
@@ -193,7 +197,7 @@ export default function MenuSidebar({
           )}
 
           <Button
-            className="mt-4 w-full justify-start gap-2 bg-transparent text-slate-500"
+            className="mt-4 w-full justify-start gap-2 text-accent-foreground"
             variant="outline"
             onClick={() => setNewTagInputVisibility(true)}
           >
