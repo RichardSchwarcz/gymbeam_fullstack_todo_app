@@ -1,7 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { getQueryKey } from '@trpc/react-query'
 import { format } from 'date-fns'
-import { Menu, PlusIcon } from 'lucide-react'
+import { FilterX, Menu, PlusIcon } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
@@ -77,6 +77,7 @@ export default function Home() {
             <Button
               size="icon"
               variant="outline"
+              className="flex-none"
               onClick={() => setMenuVisibility(!isMenuVisible)}
             >
               <Menu size={18} />
@@ -93,8 +94,20 @@ export default function Home() {
             <PlusIcon size={18} />
             Add New Task
           </Button>
-          <Button variant="outline" onClick={() => router.push('/')}>
+          <Button
+            variant="outline"
+            className="hidden sm:block"
+            onClick={() => router.push('/')}
+          >
             Clear Filter
+          </Button>
+          <Button
+            variant="outline"
+            className="flex-none sm:hidden"
+            onClick={() => router.push('/')}
+            size="icon"
+          >
+            <FilterX />
           </Button>
         </div>
         <Table>
