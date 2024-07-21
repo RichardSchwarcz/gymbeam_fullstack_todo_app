@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
 import { getQueryKey } from '@trpc/react-query'
-import { X } from 'lucide-react'
+import { LoaderCircle, X } from 'lucide-react'
 import { useRouter } from 'next/router'
 import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
 import { Controller, useForm, useFormState } from 'react-hook-form'
@@ -91,16 +91,17 @@ export default function TaskSidebar({
     form.reset()
   }
 
-  const { mutate: createTask } = api.task.createTask.useMutation({
-    onSuccess: (task) => {
-      onSuccessfulMutation()
-      toast({
-        title: 'Task added to a list.',
-        description: task.task,
-      })
-    },
-  })
-  const { mutate: updateTaskProperties } =
+  const { mutate: createTask, isPending: isNewTagPending } =
+    api.task.createTask.useMutation({
+      onSuccess: (task) => {
+        onSuccessfulMutation()
+        toast({
+          title: 'Task added to a list.',
+          description: task.task,
+        })
+      },
+    })
+  const { mutate: updateTaskProperties, isPending: isUpdatePending } =
     api.task.updateTaskProperties.useMutation({
       onSuccess: (task) => {
         onSuccessfulMutation()
@@ -317,6 +318,7 @@ export default function TaskSidebar({
           <div className="h-10 w-10" />
         )}
         <Button
+          disabled={isNewTagPending || isUpdatePending}
           onClick={() => {
             const validated = formSchema.safeParse(form.getValues())
             void form.trigger()
@@ -336,6 +338,9 @@ export default function TaskSidebar({
             }
           }}
         >
+          {(isNewTagPending || isUpdatePending) && (
+            <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+          )}
           Save Changes
         </Button>
       </div>
