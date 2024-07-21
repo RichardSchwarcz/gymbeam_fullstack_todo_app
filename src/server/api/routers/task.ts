@@ -1,4 +1,4 @@
-import { isFuture, isPast, isSameDay } from 'date-fns'
+import { endOfDay, isFuture, isPast, isSameDay, startOfDay } from 'date-fns'
 import { z } from 'zod'
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc'
 
@@ -43,13 +43,50 @@ export const taskRouter = createTRPCRouter({
       })
     }),
   getTasks: publicProcedure
-    .input(z.object({ list: z.string().optional() }))
+    .input(
+      z.object({
+        list: z.string().optional(),
+        dueDate: z.enum(['Today', 'Upcoming', 'Overdue']).optional(),
+      })
+    )
     .query(async ({ ctx, input }) => {
+      const today = new Date()
+      const startOfToday = startOfDay(today)
+      const endOfToday = endOfDay(today)
+
+      let dateFilter = {}
+
+      if (input.dueDate) {
+        switch (input.dueDate) {
+          case 'Today':
+            dateFilter = {
+              dueDate: {
+                gte: startOfToday,
+                lt: endOfToday,
+              },
+            }
+            break
+          case 'Upcoming':
+            dateFilter = {
+              dueDate: {
+                gt: endOfToday,
+              },
+            }
+            break
+          case 'Overdue':
+            dateFilter = {
+              dueDate: {
+                lt: startOfToday,
+              },
+            }
+            break
+        }
+      }
+
       return ctx.db.task.findMany({
         where: {
-          list: {
-            list: input.list,
-          },
+          list: input.list ? { list: input.list } : undefined,
+          ...dateFilter,
         },
         include: {
           tags: true,
