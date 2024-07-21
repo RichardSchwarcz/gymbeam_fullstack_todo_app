@@ -113,7 +113,7 @@ export default function Home() {
                   onClick={() => {
                     void router.push({
                       pathname: '/',
-                      query: { task: task.id },
+                      query: { ...router.query, task: task.id },
                     })
                     setEditTaskBarVisibility(true)
                     setNewTaskBarVisibility(false)
