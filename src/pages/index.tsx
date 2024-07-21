@@ -91,7 +91,7 @@ export default function Home() {
         </div>
         <Table>
           <TableHeader>
-            <TableRow>
+            <TableRow className="hover:bg-background">
               <TableHead className="w-10" />
               <TableHead>Task</TableHead>
               <TableHead className="hidden sm:table-cell">Due</TableHead>
