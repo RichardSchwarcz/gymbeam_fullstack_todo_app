@@ -1,29 +1,67 @@
-# Create T3 App
+# GymBeam To-do App
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+This is a to-do list web app created as part of the GymBeam interview process for a software developer role. It is optimized for mobile devices and supports both dark and light modes. Users can manage multiple to-do lists, specify advanced properties such as due dates, tags and priorities.
 
-## What's next? How do I make an app with this?
+## Features
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+- Mobile optimized interface
+- Dark mode and light mode support
+- Manage multiple to-do lists
+- Add due dates and tags to tasks
+- Set task priorities
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## Technologies Used
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+- Next.js
+- Prisma
+- Tailwind CSS
+- tRPC
 
-## Learn More
+## Getting Started
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+To get a local copy up and running, follow these steps:
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+### Prerequisites
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+Make sure you have Node.js installed.
 
-## How do I deploy this?
+### Installation
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+1. Clone the repo:
+
+```
+git clone https://github.com/RichardSchwarcz/gymbeam_fullstack_todo_app.git
+cd gymbeam-todo-app
+```
+
+2. Install NPM packages:
+
+```
+npm install
+```
+
+3. Set up the PostgreSQL database:
+
+Run the following script to set up the PostgreSQL database:
+
+```
+./start-database.sh
+```
+
+### Running the App
+
+To start the development server, run:
+
+```
+npm run dev
+```
+
+Open http://localhost:3000 to view it in the browser.
+
+## Deployment
+
+The app is already deployed and can be accessed at https://gymbeam-todo-app.vercel.app/.
+
+## API Development
+
+Due to the limitations of [mockapi.io's](https://mockapi.io/) free plan, which only allows creating 2 "resources", I decided to build my own API using tRPC, Prisma, and a PostgreSQL database. This allowed me to implement functionality for tags, tasks, and lists.
