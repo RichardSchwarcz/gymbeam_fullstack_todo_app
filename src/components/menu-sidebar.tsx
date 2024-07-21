@@ -128,7 +128,7 @@ export default function MenuSidebar({
           <p className="mb-2 text-sm font-semibold text-accent-foreground">
             LISTS
           </p>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col">
             {lists?.map((list) => {
               return (
                 <ListItem
@@ -281,20 +281,20 @@ function ListItem({
 
   return (
     <div className="flex items-center justify-between">
-      <div className="flex items-center gap-2">
+      <Button variant="ghost" className="w-full justify-start gap-2">
         <div
           className={cn('h-4 w-4 rounded-sm', theme === 'dark' && 'border')}
           style={{ backgroundColor: hexToRgba(color, theme) }}
         />
 
         <p>{children}</p>
-      </div>
+      </Button>
 
       <Popover>
         <PopoverTrigger asChild>
-          <button>
+          <Button variant="ghost" size="icon">
             <EllipsisVertical size={18} />
-          </button>
+          </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[200px]">
           <Command>
@@ -305,13 +305,13 @@ function ListItem({
               onKeyDown={(e) => handleKeyDown(e)}
               onBlur={() => submitMutation()}
             />
-            <button
-              onClick={() => deleteList({ id })}
-              className="mt-2 flex cursor-pointer items-center gap-2 rounded-md p-2 hover:bg-red-50"
+            <Button
+              className="mt-2 gap-2 hover:bg-destructive"
+              variant="outline"
             >
               <Trash2Icon size={18} />
               <div className="font-bold">Delete</div>
-            </button>
+            </Button>
           </Command>
         </PopoverContent>
       </Popover>
