@@ -66,6 +66,16 @@ export default function MenuSidebar({
       setNewListInputVisibility(false)
     },
   })
+  const { mutate: deleteTag } = api.tag.deleteTag.useMutation({
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: getQueryKey(api.tag.getTags),
+      })
+      void queryClient.invalidateQueries({
+        queryKey: getQueryKey(api.task.getTasks),
+      })
+    },
+  })
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -183,7 +193,9 @@ export default function MenuSidebar({
                   }}
                 >
                   <p>{tag.tag}</p>
-                  <X className="h-5 w-5 cursor-pointer rounded-sm p-1 hover:bg-destructive" />
+                  <button onClick={() => deleteTag({ id: tag.id })}>
+                    <X className="h-5 w-5 cursor-pointer rounded-sm p-1 hover:bg-destructive" />
+                  </button>
                 </div>
               )
             })}
