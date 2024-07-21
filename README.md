@@ -48,6 +48,12 @@ Run the following script to set up the PostgreSQL database:
 ./start-database.sh
 ```
 
+4. Seed the PostgreSQL database with data:
+
+```
+npx tsx ./prisma/seed.ts
+```
+
 ### Running the App
 
 To start the development server, run:

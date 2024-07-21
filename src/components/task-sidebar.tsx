@@ -84,11 +84,11 @@ export default function TaskSidebar({
   const tasksQueryKey = getQueryKey(api.task.getTasks)
   const groupedTasksQueryKey = getQueryKey(api.task.getTasksGroupedByDate)
   const onSuccessfulMutation = () => {
+    setTaskbarVisibility(false)
+    void router.push('/')
     void queryClient.invalidateQueries({ queryKey: tasksQueryKey })
     void queryClient.invalidateQueries({ queryKey: groupedTasksQueryKey })
     form.reset()
-    void router.push('/')
-    setTaskbarVisibility(false)
   }
 
   const { mutate: createTask } = api.task.createTask.useMutation({
@@ -317,19 +317,20 @@ export default function TaskSidebar({
           <div className="h-10 w-10" />
         )}
         <Button
-          onClick={async () => {
+          onClick={() => {
+            const validated = formSchema.safeParse(form.getValues())
+            void form.trigger()
             if (taskAction === 'editTask' && typeof task === 'string') {
-              await form.trigger()
-              if (form.formState.isValid) {
+              if (validated.success) {
                 updateTaskProperties({
-                  ...form.getValues(),
+                  ...validated.data,
                   id: task,
                 })
               }
             }
+
             if (taskAction === 'newTask') {
-              await form.trigger()
-              if (form.formState.isValid) {
+              if (validated.success) {
                 createTask(form.getValues())
               }
             }
