@@ -78,7 +78,7 @@ export default function Home() {
             </Button>
           )}
           <Button
-            className="w-full justify-start gap-2 text-slate-500"
+            className="w-full justify-start gap-2 text-accent-foreground"
             variant="outline"
             onClick={() => {
               setNewTaskBarVisibility(true)
