@@ -28,6 +28,7 @@ import { api } from '~/utils/api'
 export default function Home() {
   const router = useRouter()
   const list = router.query.list as string | undefined
+  const due = router.query.due as 'Today' | 'Upcoming' | 'Overdue' | undefined
 
   const [isMenuVisible, setMenuVisibility] = useState(false)
   const [isNewTaskBarVisible, setNewTaskBarVisibility] = useState(false)
@@ -50,6 +51,7 @@ export default function Home() {
 
   const { data: tasks } = api.task.getTasks.useQuery({
     list,
+    dueDate: due,
   })
 
   const { resolvedTheme } = useTheme()
