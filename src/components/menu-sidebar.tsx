@@ -308,6 +308,7 @@ function ListItem({
             <Button
               className="mt-2 gap-2 hover:bg-destructive"
               variant="outline"
+              onClick={() => deleteList({ id })}
             >
               <Trash2Icon size={18} />
               <div className="font-bold">Delete</div>
