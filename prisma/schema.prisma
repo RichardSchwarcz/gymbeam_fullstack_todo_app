@@ -34,7 +34,7 @@ model Task {
 
 model Tag {
     id    String @id @default(cuid())
-    tag   String
+    tag   String @unique
     color String
 
     task Task[]
@@ -42,7 +42,7 @@ model Tag {
 
 model List {
     id    String @id @default(cuid())
-    list  String
+    list  String @unique
     color String
 
     tasks Task[]
