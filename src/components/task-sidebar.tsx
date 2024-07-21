@@ -134,7 +134,12 @@ export default function TaskSidebar({
             size="icon"
             variant="ghost"
             onClick={() => {
-              void router.push('/')
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
+              const { task, ...restQueries } = router.query
+              void router.push({
+                pathname: '/',
+                query: restQueries,
+              })
               setTaskbarVisibility(!isTaskbarVisible)
             }}
           >
