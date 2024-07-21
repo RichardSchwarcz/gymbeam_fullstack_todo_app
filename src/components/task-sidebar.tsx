@@ -156,9 +156,7 @@ export default function TaskSidebar({
               <Controller
                 name="task"
                 control={form.control}
-                render={({ field }) => (
-                  <Input {...field} placeholder="New Task" />
-                )}
+                render={({ field }) => <Input {...field} placeholder="Title" />}
               />
             </div>
             <div className="flex flex-col">
