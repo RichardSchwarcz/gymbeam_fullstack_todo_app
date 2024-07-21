@@ -27,6 +27,7 @@ import { api } from '~/utils/api'
 
 export default function Home() {
   const router = useRouter()
+  const list = router.query.list as string | undefined
 
   const [isMenuVisible, setMenuVisibility] = useState(false)
   const [isNewTaskBarVisible, setNewTaskBarVisibility] = useState(false)
@@ -47,7 +48,9 @@ export default function Home() {
     },
   })
 
-  const { data: tasks } = api.task.getTasks.useQuery()
+  const { data: tasks } = api.task.getTasks.useQuery({
+    list,
+  })
 
   const { resolvedTheme } = useTheme()
 
@@ -105,7 +108,10 @@ export default function Home() {
                 <TableRow
                   key={task.id}
                   onClick={() => {
-                    void router.push(`/?task=${task.id}`)
+                    void router.push({
+                      pathname: '/',
+                      query: { task: task.id },
+                    })
                     setEditTaskBarVisibility(true)
                     setNewTaskBarVisibility(false)
                   }}
