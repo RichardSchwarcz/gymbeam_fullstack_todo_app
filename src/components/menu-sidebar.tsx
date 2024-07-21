@@ -15,6 +15,7 @@ import {
   X,
 } from 'lucide-react'
 import { useTheme } from 'next-themes'
+import { useRouter } from 'next/router'
 import {
   useEffect,
   useState,
@@ -253,6 +254,7 @@ function ListItem({
 }) {
   const [renamedItem, setRenamedItem] = useState('')
   const queryClient = useQueryClient()
+  const router = useRouter()
 
   const { mutate: deleteList } = api.list.deleteList.useMutation({
     onSuccess: () => {
@@ -284,7 +286,13 @@ function ListItem({
 
   return (
     <div className="flex items-center justify-between">
-      <Button variant="ghost" className="w-full justify-start gap-2">
+      <Button
+        variant="ghost"
+        className="w-full justify-start gap-2"
+        onClick={() =>
+          router.push({ pathname: '/', query: { list: children } })
+        }
+      >
         <div
           className={cn('h-4 w-4 rounded-sm', theme === 'dark' && 'border')}
           style={{
