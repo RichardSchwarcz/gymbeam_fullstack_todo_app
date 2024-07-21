@@ -20,13 +20,15 @@ import {
   TableRow,
 } from '~/components/ui/table'
 import useMediaQuery from '~/hooks/useMediaQuery'
-import { hexToRgba } from '~/lib/hextToRrgba'
+import { getAlphaByTheme, hexToRgba } from '~/lib/hextToRrgba'
 import priorityColors from '~/lib/priorityColors'
 import { cn } from '~/lib/utils'
 import { api } from '~/utils/api'
 
 export default function Home() {
   const router = useRouter()
+  const list = router.query.list as string | undefined
+  const due = router.query.due as 'Today' | 'Upcoming' | 'Overdue' | undefined
 
   const [isMenuVisible, setMenuVisibility] = useState(false)
   const [isNewTaskBarVisible, setNewTaskBarVisibility] = useState(false)
@@ -47,7 +49,10 @@ export default function Home() {
     },
   })
 
-  const { data: tasks } = api.task.getTasks.useQuery()
+  const { data: tasks } = api.task.getTasks.useQuery({
+    list,
+    dueDate: due,
+  })
 
   const { resolvedTheme } = useTheme()
 
@@ -78,7 +83,7 @@ export default function Home() {
             </Button>
           )}
           <Button
-            className="w-full justify-start gap-2 text-slate-500"
+            className="w-full justify-start gap-2 text-accent-foreground"
             variant="outline"
             onClick={() => {
               setNewTaskBarVisibility(true)
@@ -88,10 +93,13 @@ export default function Home() {
             <PlusIcon size={18} />
             Add New Task
           </Button>
+          <Button variant="outline" onClick={() => router.push('/')}>
+            Clear Filter
+          </Button>
         </div>
         <Table>
           <TableHeader>
-            <TableRow>
+            <TableRow className="hover:bg-background">
               <TableHead className="w-10" />
               <TableHead>Task</TableHead>
               <TableHead className="hidden sm:table-cell">Due</TableHead>
@@ -105,13 +113,16 @@ export default function Home() {
                 <TableRow
                   key={task.id}
                   onClick={() => {
-                    void router.push(`/?task=${task.id}`)
+                    void router.push({
+                      pathname: '/',
+                      query: { ...router.query, task: task.id },
+                    })
                     setEditTaskBarVisibility(true)
                     setNewTaskBarVisibility(false)
                   }}
                   className={cn(
                     'h-14 cursor-pointer',
-                    task.completed && 'bg-red-50/40 line-through'
+                    task.completed && 'text-muted'
                   )}
                 >
                   <TableCell>
@@ -136,7 +147,7 @@ export default function Home() {
                           style={{
                             backgroundColor: hexToRgba(
                               tag.color,
-                              resolvedTheme!
+                              getAlphaByTheme(resolvedTheme!)
                             ),
                           }}
                         >
@@ -150,9 +161,10 @@ export default function Home() {
                       className="w-fit rounded-md px-2 py-1"
                       style={{
                         backgroundColor: hexToRgba(
-                          priorityColors(task.priority),
-                          resolvedTheme!
+                          priorityColors(task.priority, resolvedTheme!),
+                          task.completed ? 0.5 : 1
                         ),
+                        color: resolvedTheme === 'dark' ? 'black' : '',
                       }}
                     >
                       {task?.priority}

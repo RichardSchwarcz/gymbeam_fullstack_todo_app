@@ -15,6 +15,7 @@ import {
   X,
 } from 'lucide-react'
 import { useTheme } from 'next-themes'
+import { useRouter } from 'next/router'
 import {
   useEffect,
   useState,
@@ -23,7 +24,7 @@ import {
   type SetStateAction,
 } from 'react'
 import { Button } from '~/components/ui/button'
-import { hexToRgba } from '~/lib/hextToRrgba'
+import { getAlphaByTheme, hexToRgba } from '~/lib/hextToRrgba'
 import { cn } from '~/lib/utils'
 import { api } from '~/utils/api'
 import { MenuSeparator } from './menu-separator'
@@ -40,7 +41,7 @@ export default function MenuSidebar({
   isSidebarVisible: boolean
   setSidebarVisibility: Dispatch<SetStateAction<boolean>>
 }) {
-  const { setTheme, resolvedTheme } = useTheme()
+  const { setTheme, resolvedTheme, theme } = useTheme()
   const [isNewTagInputVisible, setNewTagInputVisibility] = useState(false)
   const [isNewListInputVisible, setNewListInputVisibility] = useState(false)
   const { data: tags } = api.tag.getTags.useQuery()
@@ -87,7 +88,7 @@ export default function MenuSidebar({
     <SidebarContainer>
       <div>
         <div className="mb-8 flex items-center justify-between">
-          <p className="text-xl font-bold">Menu</p>
+          <p className="text-2xl">Menu</p>
           <Button
             size="icon"
             variant="ghost"
@@ -98,7 +99,9 @@ export default function MenuSidebar({
         </div>
 
         <div className="flex flex-col">
-          <p className="mb-2 text-sm font-semibold text-slate-800">TASKS</p>
+          <p className="mb-2 text-sm font-semibold text-accent-foreground">
+            TASKS
+          </p>
           <TaskButton
             data={groupedTasksByDueDate?.upcomingTasks.length}
             icon={<ChevronsRight strokeWidth={1.5} />}
@@ -108,6 +111,7 @@ export default function MenuSidebar({
           <TaskButton
             data={groupedTasksByDueDate?.todaysTasks.length}
             icon={<ListTodo strokeWidth={1.5} />}
+            className="bg-primary text-secondary"
           >
             Today
           </TaskButton>
@@ -122,8 +126,10 @@ export default function MenuSidebar({
         <MenuSeparator />
 
         <div className="flex flex-col">
-          <p className="mb-2 text-sm font-semibold text-slate-800">LISTS</p>
-          <div className="flex flex-col gap-2">
+          <p className="mb-2 text-sm font-semibold text-accent-foreground">
+            LISTS
+          </p>
+          <div className="flex flex-col">
             {lists?.map((list) => {
               return (
                 <ListItem
@@ -150,7 +156,7 @@ export default function MenuSidebar({
           )}
 
           <Button
-            className="mt-4 w-full justify-start gap-2 bg-transparent text-slate-500"
+            className="mt-4 w-full justify-start gap-2 text-accent-foreground"
             variant="outline"
             onClick={() => setNewListInputVisibility(true)}
           >
@@ -162,7 +168,7 @@ export default function MenuSidebar({
         <MenuSeparator />
 
         <div className="mb-4 flex flex-col gap-2">
-          <p className="text-sm font-semibold text-slate-800">TAGS</p>
+          <p className="text-sm font-semibold text-accent-foreground">TAGS</p>
           <div className="flex flex-wrap gap-2">
             {tags?.map((tag) => {
               return (
@@ -170,11 +176,14 @@ export default function MenuSidebar({
                   key={tag.id}
                   className="flex w-fit items-center gap-1 rounded-lg border px-2 py-1"
                   style={{
-                    backgroundColor: hexToRgba(tag.color, resolvedTheme!),
+                    backgroundColor: hexToRgba(
+                      tag.color,
+                      getAlphaByTheme(resolvedTheme!)
+                    ),
                   }}
                 >
                   <p>{tag.tag}</p>
-                  <X className="h-5 w-5 cursor-pointer rounded-sm p-1 hover:bg-red-400" />
+                  <X className="h-5 w-5 cursor-pointer rounded-sm p-1 hover:bg-destructive" />
                 </div>
               )
             })}
@@ -192,7 +201,7 @@ export default function MenuSidebar({
           )}
 
           <Button
-            className="mt-4 w-full justify-start gap-2 bg-transparent text-slate-500"
+            className="mt-4 w-full justify-start gap-2 text-accent-foreground"
             variant="outline"
             onClick={() => setNewTagInputVisibility(true)}
           >
@@ -203,13 +212,28 @@ export default function MenuSidebar({
       </div>
 
       <div className="flex w-fit gap-2 py-4">
-        <Button variant="ghost" size="icon" onClick={() => setTheme('dark')}>
+        <Button
+          className={cn(theme === 'dark' && 'border')}
+          variant="ghost"
+          size="icon"
+          onClick={() => setTheme('dark')}
+        >
           <Moon strokeWidth={1.5} size={20} />
         </Button>
-        <Button variant="ghost" size="icon" onClick={() => setTheme('light')}>
+        <Button
+          className={cn(theme === 'light' && 'border')}
+          variant="ghost"
+          size="icon"
+          onClick={() => setTheme('light')}
+        >
           <Sun strokeWidth={1.5} size={20} />
         </Button>
-        <Button variant="ghost" size="icon" onClick={() => setTheme('system')}>
+        <Button
+          className={cn(theme === 'system' && 'border')}
+          variant="ghost"
+          size="icon"
+          onClick={() => setTheme('system')}
+        >
           <Monitor strokeWidth={1.5} size={20} />
         </Button>
       </div>
@@ -230,6 +254,8 @@ function ListItem({
 }) {
   const [renamedItem, setRenamedItem] = useState('')
   const queryClient = useQueryClient()
+  const router = useRouter()
+  const isCurrentList = router.query.list === children
 
   const { mutate: deleteList } = api.list.deleteList.useMutation({
     onSuccess: () => {
@@ -261,20 +287,34 @@ function ListItem({
 
   return (
     <div className="flex items-center justify-between">
-      <div className="flex items-center gap-2">
+      <Button
+        variant="ghost"
+        className={cn(
+          'w-full justify-start gap-2',
+          isCurrentList && 'bg-secondary'
+        )}
+        onClick={() =>
+          router.push({
+            pathname: '/',
+            query: { ...router.query, list: children },
+          })
+        }
+      >
         <div
           className={cn('h-4 w-4 rounded-sm', theme === 'dark' && 'border')}
-          style={{ backgroundColor: hexToRgba(color, theme) }}
+          style={{
+            backgroundColor: hexToRgba(color, getAlphaByTheme(theme)),
+          }}
         />
 
         <p>{children}</p>
-      </div>
+      </Button>
 
       <Popover>
         <PopoverTrigger asChild>
-          <button>
+          <Button variant="ghost" size="icon">
             <EllipsisVertical size={18} />
-          </button>
+          </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[200px]">
           <Command>
@@ -285,13 +325,14 @@ function ListItem({
               onKeyDown={(e) => handleKeyDown(e)}
               onBlur={() => submitMutation()}
             />
-            <button
+            <Button
+              className="mt-2 gap-2 hover:bg-destructive"
+              variant="outline"
               onClick={() => deleteList({ id })}
-              className="mt-2 flex cursor-pointer items-center gap-2 rounded-md p-2 hover:bg-red-50"
             >
               <Trash2Icon size={18} />
               <div className="font-bold">Delete</div>
-            </button>
+            </Button>
           </Command>
         </PopoverContent>
       </Popover>
@@ -303,19 +344,43 @@ function TaskButton({
   children,
   data,
   icon,
+  className,
 }: {
   children: string
   data: number | undefined
   icon: ReactNode
+  className?: string
 }) {
+  const router = useRouter()
+  const isCurrentTasks = router.query.due === children
+
   return (
-    <Button className="w-full items-center px-2" variant="ghost">
+    <Button
+      className={cn(
+        'w-full items-center px-2',
+        isCurrentTasks && 'bg-secondary'
+      )}
+      variant="ghost"
+      onClick={() =>
+        router.push({
+          pathname: '/',
+          query: { ...router.query, due: children },
+        })
+      }
+    >
       <div className="flex w-full items-center justify-between">
         <div className="flex items-center gap-2">
           {icon}
           <p>{children}</p>
         </div>
-        <p className="rounded-md border bg-white px-2 py-1 font-bold">{data}</p>
+        <p
+          className={cn(
+            'w-8 rounded-md border bg-secondary px-2 py-1 font-bold',
+            className
+          )}
+        >
+          {data}
+        </p>
       </div>
     </Button>
   )
