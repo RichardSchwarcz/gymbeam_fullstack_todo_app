@@ -87,7 +87,7 @@ export default function MenuSidebar({
     <SidebarContainer>
       <div>
         <div className="mb-8 flex items-center justify-between">
-          <p className="text-xl font-bold">Menu</p>
+          <p className="text-2xl">Menu</p>
           <Button
             size="icon"
             variant="ghost"
