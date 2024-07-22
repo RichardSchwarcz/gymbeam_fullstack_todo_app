@@ -40,7 +40,9 @@ cd gymbeam-todo-app
 npm install
 ```
 
-3. Set up the PostgreSQL database:
+3. Create .env file by copying `.env.example` and removing `.example` extension
+
+4. Set up the PostgreSQL database:
 
 Run the following script to set up the PostgreSQL database:
 
@@ -48,7 +50,20 @@ Run the following script to set up the PostgreSQL database:
 ./start-database.sh
 ```
 
-4. Seed the PostgreSQL database with data:
+**Resolving End-of-Line Errors**
+If you encounter the error /usr/bin/env: ‘bash\r’: No such file or directory while running ./start-database.sh, it is likely due to incorrect end-of-line characters in the script file. This can happen if the file was edited on a Windows system. To fix this, you can convert the line endings to Unix format by running the following command:
+
+```
+sed -i 's/\r$//' ./start-database.sh
+```
+
+5. Push schema to the PostgreSQL database
+
+```
+npx prisma db push
+```
+
+6. Seed the PostgreSQL database with data:
 
 ```
 npx tsx ./prisma/seed.ts
